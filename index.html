@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marken | Report Formatter</title>
+  <meta name="description" content="Marken Precision Logistics — Data Cleansing & Formatting Engine." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Background Orbs -->
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="bg-orb orb3"></div>
+
+  <!-- Apple-Style Marken Top Navigation Bar -->
+  <header class="top-header">
+    <div class="brand-wrapper">
+      <div class="marken-logo-text">Marken<span class="dot">.</span></div>
+      <span class="brand-tagline">Precision Logistics Engine</span>
+    </div>
+    <div class="top-actions">
+      <div class="apple-pill-badge apple-pill-date">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="13" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M7 2v4M13 2v4M3 8h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span id="current-date-text">—</span>
+      </div>
+      <div class="apple-pill-badge">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><circle cx="4" cy="4" r="3" fill="#22c55e"/></svg>
+        System Ready
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+      <nav class="step-nav">
+
+        <div class="step-item active" id="nav-step-1" data-step="1">
+          <div class="step-circle"><span class="step-num">1</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Region</span><span class="step-sub">Select path</span></div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item" id="nav-step-2" data-step="2">
+          <div class="step-circle"><span class="step-num">2</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Upload</span><span class="step-sub">Import Excel file</span></div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item" id="nav-step-3" data-step="3">
+          <div class="step-circle"><span class="step-num">3</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Columns</span><span class="step-sub">Remove &amp; reorder</span></div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item" id="nav-step-4" data-step="4">
+          <div class="step-circle"><span class="step-num">4</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Country Filter</span><span class="step-sub">Region filter</span></div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item" id="nav-step-5" data-step="5">
+          <div class="step-circle"><span class="step-num">5</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Account Rules</span><span class="step-sub">Ch To key filters</span></div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item" id="nav-step-6" data-step="6">
+          <div class="step-circle"><span class="step-num">6</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Reference Files</span><span class="step-sub">Yesterday/Morning + QVM</span></div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item" id="nav-step-7" data-step="7">
+          <div class="step-circle"><span class="step-num">7</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Processing</span><span class="step-sub">Enrich &amp; colour</span></div>
+        </div>
+        <div class="step-connector"></div>
+
+        <div class="step-item" id="nav-step-8" data-step="8">
+          <div class="step-circle"><span class="step-num">8</span><svg class="step-check" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="step-label"><span class="step-title">Export</span><span class="step-sub">Download result</span></div>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="stat-pill">
+          <span class="stat-val" id="stat-rows-val">—</span>
+          <span class="stat-lbl">Rows</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-val" id="stat-removed-val">—</span>
+          <span class="stat-lbl">Removed</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── Main content ── -->
+    <main class="main-content">
+
+      <!-- ════ STEP 1: Region Selection ════ -->
+      <section class="step-panel active" id="panel-step-1">
+        <div class="panel-header">
+          <h1>Select Report Region</h1>
+          <p class="panel-sub">Choose your target regional path before uploading the report. Country filters will be pre-configured automatically.</p>
+        </div>
+
+        <div class="region-grid">
+
+          <div class="region-card" data-region="UK">
+            <div class="region-card-top">
+              <div class="region-flag">🇬🇧</div>
+              <div class="region-badge">Path 1</div>
+            </div>
+            <div class="region-info">
+              <span class="region-name">UK Region</span>
+              <span class="region-desc">United Kingdom shipments</span>
+            </div>
+          </div>
+
+          <div class="region-card" data-region="US">
+            <div class="region-card-top">
+              <div class="region-flag">🇺🇸</div>
+              <div class="region-badge">Path 2</div>
+            </div>
+            <div class="region-info">
+              <span class="region-name">US Region</span>
+              <span class="region-desc">United States shipments</span>
+            </div>
+          </div>
+
+          <div class="region-card selected" data-region="EU">
+            <div class="region-card-top">
+              <div class="region-flag">🇪🇺</div>
+              <div class="region-badge">Path 3</div>
+            </div>
+            <div class="region-info">
+              <span class="region-name">EU Region</span>
+              <span class="region-desc">27 European Union member states</span>
+            </div>
+          </div>
+
+          <div class="region-card" data-region="CH">
+            <div class="region-card-top">
+              <div class="region-flag">🇨🇭</div>
+              <div class="region-badge">Path 4</div>
+            </div>
+            <div class="region-info">
+              <span class="region-name">CH Region</span>
+              <span class="region-desc">Switzerland shipments</span>
+            </div>
+          </div>
+
+          <div class="region-card" data-region="IE">
+            <div class="region-card-top">
+              <div class="region-flag">🇮🇪</div>
+              <div class="region-badge">Path 5</div>
+            </div>
+            <div class="region-info">
+              <span class="region-name">Ireland Region</span>
+              <span class="region-desc">Ireland shipments</span>
+            </div>
+          </div>
+
+          <div class="region-card" data-region="NON-EU">
+            <div class="region-card-top">
+              <div class="region-flag">🌐</div>
+              <div class="region-badge">Path 6</div>
+            </div>
+            <div class="region-info">
+              <span class="region-name">NON-EU Region</span>
+              <span class="region-desc">All Non-EU world shipments</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="panel-actions">
+          <button class="btn btn-primary" id="step1-next">Continue to Upload →</button>
+        </div>
+      </section>
+
+      <!-- ════ STEP 2: Upload ════ -->
+      <section class="step-panel" id="panel-step-2">
+        <div class="panel-header">
+          <h1>Upload Your Report</h1>
+          <p class="panel-sub">Import a raw Excel file (.xlsx or .xls) to begin the cleansing process for <strong id="selected-region-label" style="color:var(--marken-cyan);">EU Region</strong>.</p>
+        </div>
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="file-input" accept=".xlsx,.xls" hidden />
+          <div class="upload-icon">
+            <svg viewBox="0 0 64 64" fill="none">
+              <rect x="8" y="16" width="48" height="40" rx="10" stroke="url(#ug)" stroke-width="2.5"/>
+              <path d="M24 16V12a4 4 0 014-4h8a4 4 0 014 4v4" stroke="url(#ug)" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M32 30v14M26 36l6-6 6 6" stroke="url(#ug)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs><linearGradient id="ug" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#0091DA"/><stop offset="1" stop-color="#002554"/></linearGradient></defs>
+            </svg>
+          </div>
+          <h2 class="upload-heading">Drop your Excel file here</h2>
+          <p class="upload-hint">or click to browse from your computer</p>
+          <button class="btn btn-outline" id="browse-btn">Browse Files</button>
+        </div>
+        <div class="file-info-card hidden" id="file-info">
+          <div class="file-icon">
+            <svg viewBox="0 0 40 40" fill="none" width="40" height="40"><rect width="40" height="40" rx="10" fill="#22c55e1a"/><path d="M12 10h10l8 8v14a2 2 0 01-2 2H12a2 2 0 01-2-2V12a2 2 0 012-2z" fill="#22c55e33" stroke="#22c55e" stroke-width="1.5"/><path d="M22 10v8h8" stroke="#22c55e" stroke-width="1.5" stroke-linejoin="round"/><text x="14" y="28" font-size="7" fill="#16a34a" font-family="Poppins,sans-serif" font-weight="700">XLS</text></svg>
+          </div>
+          <div class="file-details">
+            <span class="file-name" id="file-name-display">—</span>
+            <span class="file-meta" id="file-meta-display">—</span>
+          </div>
+          <div class="file-status"><span class="badge badge-success">Ready</span></div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" id="step2-back">← Back</button>
+          <button class="btn btn-primary" id="step2-next" disabled>Continue to Columns →</button>
+        </div>
+      </section>
+
+      <!-- ════ STEP 3: Columns ════ -->
+      <section class="step-panel" id="panel-step-3">
+        <div class="panel-header">
+          <h1>Column Cleanup</h1>
+          <p class="panel-sub">Columns will be reordered to match the required schema. EXP DATE is added as a new empty column.</p>
+        </div>
+        <div class="columns-grid">
+          <div class="col-group col-group--add" style="grid-column:1/-1;">
+            <div class="col-group-header">
+              <svg viewBox="0 0 20 20" fill="none" width="18"><path d="M10 4v12M4 10h12" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>Column Added</span>
+            </div>
+            <div class="col-tags"><span class="col-tag col-tag--add">EXP DATE</span></div>
+          </div>
+        </div>
+        <div class="output-schema">
+          <div class="schema-header">
+            <svg viewBox="0 0 20 20" fill="none" width="18"><path d="M4 6h12M4 10h12M4 14h8" stroke="#0091DA" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>Output Column Order</span>
+          </div>
+          <div class="schema-list">
+            <div class="schema-item"><span class="schema-idx">1</span><span>Trial AWB</span></div>
+            <div class="schema-item"><span class="schema-idx">2</span><span>Description</span></div>
+            <div class="schema-item"><span class="schema-idx">3</span><span>UPS Tracking</span></div>
+            <div class="schema-item"><span class="schema-idx">4</span><span>MAWB</span></div>
+            <div class="schema-item"><span class="schema-idx">5</span><span>Ch To key</span></div>
+            <div class="schema-item"><span class="schema-idx">6</span><span>Group A c Name</span></div>
+            <div class="schema-item"><span class="schema-idx">7</span><span>Sched Collection date</span></div>
+            <div class="schema-item"><span class="schema-idx">8</span><span>Collection Date</span></div>
+            <div class="schema-item"><span class="schema-idx">9</span><span>Sched Delivery date</span></div>
+            <div class="schema-item"><span class="schema-idx">10</span><span>Charge Reference</span></div>
+            <div class="schema-item"><span class="schema-idx">11</span><span>Collection Country</span></div>
+            <div class="schema-item"><span class="schema-idx">12</span><span>Delivery Country</span></div>
+            <div class="schema-item"><span class="schema-idx">13</span><span>Collection Town</span></div>
+            <div class="schema-item"><span class="schema-idx">14</span><span>Delivery Town</span></div>
+            <div class="schema-item schema-item--new"><span class="schema-idx">15</span><span>EXP DATE <em class="new-badge">NEW</em></span></div>
+            <div class="schema-item"><span class="schema-idx">16</span><span>Latest Dry Ice Replenishment</span></div>
+            <div class="schema-item"><span class="schema-idx">17</span><span>Contents Description</span></div>
+            <div class="schema-item"><span class="schema-idx">18</span><span>Temperature</span></div>
+            <div class="schema-item"><span class="schema-idx">19</span><span>Packaging Type Size</span></div>
+          </div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" id="step3-back">← Back</button>
+          <button class="btn btn-primary" id="step3-next">Apply &amp; Continue →</button>
+        </div>
+      </section>
+
+      <!-- ════ STEP 4: Country Filter ════ -->
+      <section class="step-panel" id="panel-step-4">
+        <div class="panel-header">
+          <h1>Country Filter</h1>
+          <p class="panel-sub" id="country-filter-sub">Target countries for your selected region path.</p>
+        </div>
+        <div class="country-toolbar">
+          <button class="btn btn-sm btn-ghost" id="select-all-countries">Select All</button>
+          <button class="btn btn-sm btn-ghost" id="deselect-all-countries">Deselect All</button>
+          <span class="country-count-label"><span id="selected-country-count">0</span> of <span id="total-country-count">0</span> selected</span>
+        </div>
+        <div class="country-grid" id="country-grid"></div>
+        <div class="info-box">
+          <svg viewBox="0 0 20 20" fill="none" width="16"><circle cx="10" cy="10" r="8" stroke="#0091DA" stroke-width="1.8"/><path d="M10 9v5M10 7v.5" stroke="#0091DA" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>A row is kept if <strong>Delivery Country</strong> matches the selected region filter.</span>
+        </div>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" id="step4-back">← Back</button>
+          <button class="btn btn-primary" id="step4-next">Apply Filter →</button>
+        </div>
+      </section>
+
+      <!-- ════ STEP 5: Account Rules ════ -->
+      <section class="step-panel" id="panel-step-5">
+        <div class="panel-header">
+          <h1>Account Number Rules</h1>
+          <p class="panel-sub">Rows matching a Ch To key whose Delivery Town is <em>not</em> in the allowed list will be removed.</p>
+        </div>
+        <div class="rules-list" id="rules-list"></div>
+        <div class="add-rule-form glass-card">
+          <h3 class="form-title">Add New Rule</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="rule-keys">Ch To key values <em>(comma-separated)</em></label>
+              <input type="text" id="rule-keys" class="form-input" placeholder="e.g. US640, US1537" />
+            </div>
+            <div class="form-group">
+              <label for="rule-towns">Allowed Delivery Towns <em>(comma-separated)</em></label>
+              <input type="text" id="rule-towns" class="form-input" placeholder="e.g. Dublin, Hamburg" />
+            </div>
+          </div>
+          <label class="both-dir-toggle">
+            <input type="checkbox" id="rule-both-dir" />
+            <span>Check both <strong>Collection Town</strong> and <strong>Delivery Town</strong> (going to <em>or</em> from)</span>
+          </label>
+          <button class="btn btn-outline btn-sm" id="add-rule-btn">+ Add Rule</button>
+        </div>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" id="step5-back">← Back</button>
+          <button class="btn btn-primary" id="step5-next">Apply Rules →</button>
+        </div>
+      </section>
+
+      <!-- ════ STEP 6: Reference Files ════ -->
+      <section class="step-panel" id="panel-step-6">
+        <div class="panel-header">
+          <h1>Reference Files</h1>
+          <p class="panel-sub">Upload yesterday's report to enrich descriptions, tracking numbers, EXP dates and row colours. QVM is optional.</p>
+        </div>
+
+        <div class="ref-upload-grid">
+
+          <!-- Yesterday's Report -->
+          <div class="ref-upload-slot" id="slot-yesterday">
+            <input type="file" id="yesterday-input" accept=".xlsx,.xls" hidden />
+            <div class="ref-slot-icon">
+              <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+                <rect x="4" y="8" width="40" height="34" rx="8" stroke="url(#rg1)" stroke-width="2.5"/>
+                <path d="M14 8V6a2 2 0 012-2h16a2 2 0 012 2v2" stroke="url(#rg1)" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M24 22v10M20 27l4-4 4 4" stroke="url(#rg1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs><linearGradient id="rg1" x1="4" y1="8" x2="44" y2="42" gradientUnits="userSpaceOnUse"><stop stop-color="#0091DA"/><stop offset="1" stop-color="#002554"/></linearGradient></defs>
+              </svg>
+            </div>
+            <div class="ref-slot-info">
+              <span class="ref-slot-title">Yesterday's Report / Morning Report</span>
+              <span class="ref-slot-sub">Used for Description, UPS Tracking, EXP DATE &amp; row colours</span>
+              <span class="badge badge-warn">Required</span>
+            </div>
+            <div class="ref-slot-status" id="yesterday-status">
+              <button class="btn btn-outline btn-sm" id="yesterday-browse">Upload File</button>
+            </div>
+          </div>
+
+          <!-- QVM -->
+          <div class="ref-upload-slot" id="slot-qvm">
+            <input type="file" id="qvm-input" accept=".xlsx,.xls" hidden />
+            <div class="ref-slot-icon">
+              <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+                <rect x="4" y="8" width="40" height="34" rx="8" stroke="url(#rg2)" stroke-width="2.5"/>
+                <path d="M14 8V6a2 2 0 012-2h16a2 2 0 012 2v2" stroke="url(#rg2)" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M24 22v10M20 27l4-4 4 4" stroke="url(#rg2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="36" cy="36" r="8" fill="#ffffff" stroke="url(#rg2)" stroke-width="2.5"/>
+                <path d="M33 36l2 2 3-3" stroke="#0091DA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs><linearGradient id="rg2" x1="4" y1="8" x2="44" y2="42" gradientUnits="userSpaceOnUse"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#0091DA"/></linearGradient></defs>
+              </svg>
+            </div>
+            <div class="ref-slot-info">
+              <span class="ref-slot-title">QVM File</span>
+              <span class="ref-slot-sub">Used to backfill missing UPS Tracking/MAWB numbers</span>
+              <span class="badge badge-muted">Optional</span>
+            </div>
+            <div class="ref-slot-status" id="qvm-status">
+              <button class="btn btn-outline btn-sm" id="qvm-browse">Upload File</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="enrichment-summary">
+          <div class="enrichment-header">
+            <svg viewBox="0 0 20 20" fill="none" width="16"><path d="M10 3v14M3 10h14" stroke="#0091DA" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>What will happen automatically</span>
+          </div>
+          <div class="enrichment-steps">
+            <div class="enrich-item"><span class="enrich-num">1</span><span>Description refreshed from yesterday's report (col 2) &amp; "Courier Service" changed to N/A</span></div>
+            <div class="enrich-item"><span class="enrich-num">2</span><span>UPS Tracking refreshed from yesterday's report (col 3)</span></div>
+            <div class="enrich-item"><span class="enrich-num">3</span><span>Multi-1Z tracking numbers consolidated into UPS Tracking/MAWB</span></div>
+            <div class="enrich-item enrich-item--optional"><span class="enrich-num">4</span><span>N/A UPS Tracking/MAWB backfilled from QVM (col 2) <em>— if QVM uploaded</em></span></div>
+            <div class="enrich-item"><span class="enrich-num">5</span><span>Remaining N/A UPS Tracking/MAWB backfilled from MAWB column, then MAWB deleted</span></div>
+            <div class="enrich-item"><span class="enrich-num">6</span><span>EXP DATE populated from yesterday's report (col 13)</span></div>
+            <div class="enrich-item"><span class="enrich-num">7</span><span>Separate comment column added next to Packaging Type Size (col 18) with row colours</span></div>
+            <div class="enrich-item"><span class="enrich-num">8</span><span>Uncoloured rows coloured Orange by Charge Reference: LT19062, LT18925, EP5770</span></div>
+            <div class="enrich-item"><span class="enrich-num">9</span><span>Rows with blank or future Collection Date deleted (only past dates &amp; today kept)</span></div>
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button class="btn btn-ghost" id="step6-back">← Back</button>
+          <button class="btn btn-primary" id="step6-next" disabled>Run Processing →</button>
+        </div>
+      </section>
+
+      <!-- ════ STEP 7: Processing ════ -->
+      <section class="step-panel" id="panel-step-7">
+        <div class="panel-header">
+          <h1>Processing</h1>
+          <p class="panel-sub">Running all enrichment and colour-coding steps automatically.</p>
+        </div>
+
+        <div class="process-log-wrap">
+          <div class="process-log" id="process-log">
+            <div class="log-placeholder">Click <strong>Run Processing</strong> to begin…</div>
+          </div>
+        </div>
+
+        <div class="color-legend">
+          <div class="legend-title">Row colour key</div>
+          <div class="legend-items">
+            <div class="legend-item"><div class="legend-swatch" style="background:#FFF2CC;border-color:#d4b400;"></div><span>Yellow (Y)</span></div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#E8D5F5;border-color:#9b59b6;"></div><span>Purple (P)</span></div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#FFD7D7;border-color:#e74c3c;"></div><span>Red (R)</span></div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#FFE5CC;border-color:#e67e22;"></div><span>Orange (O / Charge Ref)</span></div>
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button class="btn btn-ghost" id="step7-back">← Back</button>
+          <button class="btn btn-primary" id="step7-run">▶ Run Processing</button>
+          <button class="btn btn-primary hidden" id="step7-next">Continue to Export →</button>
+        </div>
+      </section>
+
+      <!-- ════ STEP 8: Export ════ -->
+      <section class="step-panel" id="panel-step-8">
+        <div class="panel-header">
+          <h1>Review &amp; Export</h1>
+          <p class="panel-sub">Your data has been fully cleaned and enriched. Download the formatted, colour-coded report.</p>
+        </div>
+
+        <div class="summary-cards">
+          <div class="summary-card"><span class="summary-icon">📄</span><div class="summary-info"><span class="summary-val" id="sum-original">—</span><span class="summary-lbl">Original rows</span></div></div>
+          <div class="summary-card summary-card--danger"><span class="summary-icon">🗑️</span><div class="summary-info"><span class="summary-val" id="sum-country-removed">—</span><span class="summary-lbl">Region removed</span></div></div>
+          <div class="summary-card summary-card--warn"><span class="summary-icon">🔑</span><div class="summary-info"><span class="summary-val" id="sum-rules-removed">—</span><span class="summary-lbl">Rule rows removed</span></div></div>
+          <div class="summary-card summary-card--warn"><span class="summary-icon">🎨</span><div class="summary-info"><span class="summary-val" id="sum-colored">—</span><span class="summary-lbl">Rows coloured</span></div></div>
+          <div class="summary-card summary-card--success"><span class="summary-icon">✅</span><div class="summary-info"><span class="summary-val" id="sum-final">—</span><span class="summary-lbl">Final rows</span></div></div>
+        </div>
+
+        <div class="preview-table-wrap">
+          <div class="preview-label">Preview (first 10 rows)</div>
+          <div class="table-scroll">
+            <table class="preview-table" id="preview-table">
+              <thead id="preview-thead"></thead>
+              <tbody id="preview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="export-actions">
+          <button class="btn btn-primary btn-lg" id="download-btn">
+            <svg viewBox="0 0 20 20" fill="none" width="18"><path d="M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Download Cleaned Report (.xlsx)
+          </button>
+          <button class="btn btn-ghost" id="start-over-btn">Start Over</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
