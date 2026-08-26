@@ -73,7 +73,7 @@ const CHARGE_REF_ORANGE = ['LT19062','LT18925','EP5770'];
 // ══════════════════════════════
 const state = {
   currentStep: 1,
-  selectedRegion: 'EU', // 'UK' | 'US' | 'EU' | 'NON-EU'
+  selectedRegion: null, // 'UK' | 'US' | 'EU' | 'CH' | 'IE' | 'NON-EU'
   rawData: [],
   workingData: [],
   dynamicSchema: [...OUTPUT_SCHEMA],
@@ -209,6 +209,8 @@ function showToast(msg, type='') {
 // ══════════════════════════════
 function initRegionSelection() {
   const cards = document.querySelectorAll('.region-card');
+  const nextBtn = document.getElementById('step1-next');
+
   cards.forEach(card => {
     card.addEventListener('click', () => {
       cards.forEach(c => c.classList.remove('selected'));
@@ -216,10 +218,17 @@ function initRegionSelection() {
       state.selectedRegion = card.dataset.region;
       document.getElementById('selected-region-label').textContent = REGION_NAMES[state.selectedRegion];
       configureRegionCountries();
+      nextBtn.disabled = false;
     });
   });
 
-  document.getElementById('step1-next').addEventListener('click', () => goToStep(2));
+  nextBtn.addEventListener('click', () => {
+    if (!state.selectedRegion) {
+      showToast('Please select a report region to continue', 'error');
+      return;
+    }
+    goToStep(2);
+  });
 }
 
 function configureRegionCountries() {
@@ -945,10 +954,10 @@ async function downloadFile() {
 
 function startOver() {
   Object.assign(state, {
-    currentStep: 1, selectedRegion: 'EU',
+    currentStep: 1, selectedRegion: null,
     rawData:[], workingData:[], dynamicSchema:[...OUTPUT_SCHEMA], fileName:'',
     originalCount:0, removedByCountry:0, removedByRules:0,
-    selectedCountries: new Set(EU_COUNTRIES),
+    selectedCountries: new Set(),
     rules: DEFAULT_RULES.map(r=>({...r,keys:[...r.keys],towns:[...r.towns],checkBothDirections:r.checkBothDirections})),
     yesterdayAoA:[], yesterdayLookup: new Map(),
     qvmAoA:[],       qvmLookup: new Map(),
@@ -956,9 +965,8 @@ function startOver() {
   });
 
   // Reset region selection
-  document.querySelectorAll('.region-card').forEach(c => {
-    c.classList.toggle('selected', c.dataset.region === 'EU');
-  });
+  document.querySelectorAll('.region-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('step1-next').disabled = true;
 
   document.getElementById('file-input').value = '';
   document.getElementById('file-info').classList.add('hidden');

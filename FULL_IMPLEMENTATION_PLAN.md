@@ -179,3 +179,4 @@ Runs 8 automated sub-steps in sequence with live MagicUI-styled animated card no
 * **2026-08-26**: Added Description rule to automatically convert any `"Courier Service"` values to `"N/A"`.
 * **2026-08-26**: Updated export file naming format to `EDI outstanding POD report DD.MM.YYYY Region.xlsx`.
 * **2026-08-26**: Added dynamic Current Date badge (`📅 Wed, 26 Aug 2026`) in the top sticky navigation bar across all pages.
+* **2026-08-26**: Removed pre-selection of EU region in Step 1. The user must explicitly choose a regional path (`UK`, `US`, `EU`, `CH`, `IE`, or `NON-EU`) to enable the continue button.
