@@ -98,39 +98,6 @@ const state = {
 };
 
 // ══════════════════════════════
-//  Daily Motivation Quotes
-//  ══════════════════════════════
-const DAILY_QUOTES = {
-  0: 'Sunday: "Rest today, so you can chase your dreams tomorrow."',
-  1: 'Monday: "The secret of getting ahead is getting started." — Mark Twain',
-  2: 'Tuesday: "It always seems impossible until it\'s done." — Nelson Mandela',
-  3: 'Wednesday: "Happiness is not something ready made. It comes from your own actions." — Dalai Lama',
-  4: 'Thursday: "Believe you can and you\'re halfway there." — Theodore Roosevelt',
-  5: 'Friday: "Success is not final, failure is not fatal: it is the courage to continue that counts." — Winston Churchill',
-  6: 'Saturday: "Either you run the day, or the day runs you." — Jim Rohn',
-};
-
-function getDailyQuote() {
-  return DAILY_QUOTES[new Date().getDay()];
-}
-
-function fireConfetti() {
-  if (typeof confetti === 'undefined') return;
-  const duration = 2500;
-  const end = Date.now() + duration;
-  (function frame() {
-    confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#0091DA', '#FFC72C', '#05CDFF', '#FC2700', '#BD77F2'] });
-    confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#0091DA', '#FFC72C', '#05CDFF', '#FC2700', '#BD77F2'] });
-    if (Date.now() < end) requestAnimationFrame(frame);
-  })();
-  confetti({ particleCount: 140, spread: 100, origin: { y: 0.6 }, colors: ['#0091DA', '#FFC72C', '#05CDFF', '#FC2700', '#BD77F2', '#FFE600'] });
-}
-
-function celebrateGenerated() {
-  showToast(`🎉 Report ready! ${getDailyQuote()}`, 'success');
-}
-
-// ══════════════════════════════
 //  Helpers
 // ══════════════════════════════
 const norm = s => String(s ?? '').trim().toLowerCase().replace(/\s+/g,' ');
@@ -996,7 +963,6 @@ function renderExport() {
     });
     tbody.appendChild(tr);
   });
-  celebrateGenerated();
 }
 
 function initExport() {
@@ -1077,7 +1043,6 @@ async function downloadFile() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    fireConfetti();
     showToast('Download started ✓','success');
   } catch(err) {
     showToast('Export failed — see console','error');
