@@ -147,6 +147,7 @@ Each sub-step is logged in a live **processing log**.
 - 🟣 **Purple (P)** — `#BD77F2`
 - 🔴 **Red (R)** — `#FC2700`
 - 🟠 **Orange (O / Charge Ref)** — `#FFB105`
+- 🔵 **Blue (B)** — `#05CDFF`
 
 When finished, **Continue to Export** appears; counts (final rows, rows coloured) are shown.
 

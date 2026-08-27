@@ -62,9 +62,10 @@ const COLOR_ARGB = {
   purple: 'FFBD77F2',
   red:    'FFFC2700',
   orange: 'FFFFB105',
+  blue:   'FF05CDFF',
 };
 
-const PKG_COLOR_MAP = { y:'yellow', p:'purple', r:'red', o:'orange' };
+const PKG_COLOR_MAP = { y:'yellow', p:'purple', r:'red', o:'orange', b:'blue' };
 const CHARGE_REF_ORANGE = ['LT19062','LT18925','EP5770'];
 
 
@@ -944,7 +945,7 @@ function renderExport() {
   schema.forEach(c => { const th = document.createElement('th'); th.textContent = c; trHead.appendChild(th); });
   thead.appendChild(trHead);
 
-  const COLOR_BG = { yellow:'#FFE600', purple:'#BD77F2', red:'#FC2700', orange:'#FFB105' };
+  const COLOR_BG = { yellow:'#FFE600', purple:'#BD77F2', red:'#FC2700', orange:'#FFB105', blue:'#05CDFF' };
 
   state.workingData.slice(0, 10).forEach((row, idx) => {
     const tr   = document.createElement('tr');
