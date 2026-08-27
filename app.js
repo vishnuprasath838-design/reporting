@@ -108,6 +108,22 @@ function isNA(val) {
   return s === '' || s === 'n/a' || s === 'na' || s === '#n/a' || s === '0' || Number(s) === 0;
 }
 
+// Animate a numeric element count-up to a target value (NumberTicker-style)
+function countUp(el, target, duration = 900) {
+  if (!el) return;
+  let start = null;
+  const from = 0;
+  const step = ts => {
+    if (!start) start = ts;
+    const progress = Math.min((ts - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(from + (target - from) * eased);
+    el.textContent = current.toLocaleString();
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 function parseDateValue(val) {
   if (val === null || val === undefined || val === '') return null;
   if (val instanceof Date && !isNaN(val.getTime())) return val;
@@ -189,10 +205,20 @@ function goToStep(n) {
 }
 
 function updateSidebar() {
+  const rowsEl = document.getElementById('stat-rows-val');
   const rows = state.workingData.length || state.originalCount;
-  document.getElementById('stat-rows-val').textContent = rows > 0 ? rows.toLocaleString() : '—';
+  if (rows > 0) {
+    countUp(rowsEl, rows);
+  } else {
+    rowsEl.textContent = '—';
+  }
+  const removedEl = document.getElementById('stat-removed-val');
   const removed = state.originalCount - state.workingData.length;
-  document.getElementById('stat-removed-val').textContent = removed > 0 ? removed.toLocaleString() : '—';
+  if (removed > 0) {
+    countUp(removedEl, removed);
+  } else {
+    removedEl.textContent = '—';
+  }
 }
 
 // ══════════════════════════════
@@ -929,11 +955,11 @@ function tick() { return new Promise(r => setTimeout(r, 80)); }
 //  STEP 8 — Export
 // ══════════════════════════════
 function renderExport() {
-  document.getElementById('sum-original').textContent       = state.originalCount.toLocaleString();
-  document.getElementById('sum-country-removed').textContent = state.removedByCountry.toLocaleString();
-  document.getElementById('sum-rules-removed').textContent   = state.removedByRules.toLocaleString();
-  document.getElementById('sum-colored').textContent         = state.rowColors.size.toLocaleString();
-  document.getElementById('sum-final').textContent           = state.workingData.length.toLocaleString();
+  countUp(document.getElementById('sum-original'), state.originalCount);
+  countUp(document.getElementById('sum-country-removed'), state.removedByCountry);
+  countUp(document.getElementById('sum-rules-removed'), state.removedByRules);
+  countUp(document.getElementById('sum-colored'), state.rowColors.size);
+  countUp(document.getElementById('sum-final'), state.workingData.length);
 
   const schema = state.dynamicSchema;
   const thead  = document.getElementById('preview-thead');
