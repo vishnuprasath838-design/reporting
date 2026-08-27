@@ -482,6 +482,15 @@ function applyCountryFilter() {
   const hasNonEU = regions.has('NON-EU');
   const explicitCountries = new Set([...state.selectedCountries].filter(c => !c.includes('Non-EU')).map(norm));
 
+  // Build the set of countries that have their own dedicated region card
+  // These should NOT be matched by the NON-EU catch-all
+  const dedicatedRegionCountries = new Set([
+    ...UK_COUNTRIES.map(norm),
+    ...US_COUNTRIES.map(norm),
+    ...CH_COUNTRIES.map(norm),
+    ...IE_COUNTRIES.map(norm),
+  ]);
+
   state.workingData = state.workingData.filter(row => {
     const dc = norm(row['Delivery Country']);
     if (!dc) return false;
@@ -489,8 +498,8 @@ function applyCountryFilter() {
     // Check explicit match (e.g. UK, US, EU member states, CH, IE)
     if (explicitCountries.has(dc)) return true;
 
-    // Check Non-EU match
-    if (hasNonEU && !euNorm.has(dc)) return true;
+    // NON-EU: match only countries that are NOT in EU AND NOT in US/UK/CH/IE dedicated regions
+    if (hasNonEU && !euNorm.has(dc) && !dedicatedRegionCountries.has(dc)) return true;
 
     return false;
   });
@@ -945,7 +954,10 @@ function renderExport() {
       const td = document.createElement('td');
       let val = row[c];
       if (val instanceof Date) val = val.toLocaleDateString('en-GB');
-      td.textContent = val !== undefined && val !== null ? String(val) : '';
+      const strVal = val !== undefined && val !== null ? String(val) : '';
+      // Show N/A for empty UPS Tracking/MAWB cells
+      const isUpsCol = c === 'UPS Tracking/MAWB' || c === 'UPS Tracking';
+      td.textContent = isUpsCol && (!strVal || strVal.trim() === '' || strVal.toLowerCase() === 'n/a' || strVal === '0') ? 'N/A' : strVal;
       tr.appendChild(td);
     });
     tbody.appendChild(tr);
@@ -987,7 +999,13 @@ async function downloadFile() {
       const rowArray = schema.map(col => {
         let val = row[col];
         if (val instanceof Date) val = val.toLocaleDateString('en-GB');
-        return val !== undefined && val !== null ? val : '';
+        const strVal = val !== undefined && val !== null ? val : '';
+        // Show N/A for empty UPS Tracking/MAWB cells in Excel export
+        const isUpsCol = col === 'UPS Tracking/MAWB' || col === 'UPS Tracking';
+        if (isUpsCol && (strVal === '' || strVal === null || String(strVal).trim() === '' || String(strVal).toLowerCase() === 'n/a' || String(strVal) === '0')) {
+          return 'N/A';
+        }
+        return strVal;
       });
 
       const excelRow = worksheet.addRow(rowArray);
