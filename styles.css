@@ -289,11 +289,64 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
 .btn-lg { padding: 16px 36px; font-size: 1.02rem; }
 
 /* ══ STEP 1 — Region Selection (Apple Cards) ══ */
+.region-preset-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 14px 20px;
+  background: var(--surface-glass-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-apple);
+}
+
+.preset-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+}
+
+.combo-summary-pill {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 145, 218, 0.08);
+  border: 1px solid rgba(0, 145, 218, 0.2);
+  color: var(--marken-navy);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.combo-summary-pill.active {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #15803d;
+}
+
+.combo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+
+.combo-summary-pill.active .combo-dot {
+  background: #22c55e;
+}
+
 .region-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
 }
 
 .region-card {
@@ -310,6 +363,30 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
   transition: var(--spring-transition);
   user-select: none;
   box-shadow: var(--shadow-apple);
+}
+
+.card-check-icon {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--marken-cyan);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: var(--spring-transition);
+}
+
+.region-card.selected .card-check-icon {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .region-card:hover {

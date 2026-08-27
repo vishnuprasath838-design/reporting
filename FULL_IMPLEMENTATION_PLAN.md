@@ -28,9 +28,9 @@ The **Marken Report Formatter** is a high-performance, browser-native web applic
 
 ---
 
-### Step 1 — Region Path Selection (Initial Stage)
+### Step 1 — Region Selection / Custom Combination Mode
 
-User selects one of **6 Regional Paths** before uploading the file. This pre-configures Step 4:
+User can select a single region or combine **multiple regional paths simultaneously** (e.g. `UK + IE`, `US + UK + NON-EU`, or `ALL`).
 
 | Path | Region | Target Delivery Countries |
 |---|---|---|
@@ -41,8 +41,8 @@ User selects one of **6 Regional Paths** before uploading the file. This pre-con
 | **Path 5** | 🇮🇪 **Ireland Region** | `Ireland`, `IE`, `Republic of Ireland`, `Eire` |
 | **Path 6** | 🌐 **NON-EU Region** | **All Non-EU World Countries** (filters out all 27 EU member states) |
 
-> [!NOTE]
-> `NON-EU` path automatically covers 100% of global non-EU countries (e.g. Japan, Australia, Brazil, Canada, India, China, UAE, Mexico, etc.).
+> [!TIP]
+> **Custom Combinations**: Users can click multiple cards or use quick presets (`Select ALL`, `UK + IE`, `US + UK + NON-EU`). The exported filename automatically reflects the combination tag (e.g. `EDI outstanding POD report 27.08.2026 UK+IE.xlsx`).
 
 ---
 
@@ -180,3 +180,4 @@ Runs 8 automated sub-steps in sequence with live MagicUI-styled animated card no
 * **2026-08-26**: Updated export file naming format to `EDI outstanding POD report DD.MM.YYYY Region.xlsx`.
 * **2026-08-26**: Added dynamic Current Date badge (`📅 Wed, 26 Aug 2026`) in the top sticky navigation bar across all pages.
 * **2026-08-26**: Removed pre-selection of EU region in Step 1. The user must explicitly choose a regional path (`UK`, `US`, `EU`, `CH`, `IE`, or `NON-EU`) to enable the continue button.
+* **2026-08-27**: Added Multi-Region Selection & Custom Combinations Mode (e.g. `UK + IE`, `US + UK + NON-EU`, or `ALL`), complete with quick preset toolbar and live combination badge.

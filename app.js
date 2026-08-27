@@ -73,7 +73,9 @@ const CHARGE_REF_ORANGE = ['LT19062','LT18925','EP5770'];
 // ══════════════════════════════
 const state = {
   currentStep: 1,
-  selectedRegion: null, // 'UK' | 'US' | 'EU' | 'CH' | 'IE' | 'NON-EU'
+  selectedRegions: new Set(), // Set of selected region keys e.g. 'UK', 'IE', 'NON-EU'
+  selectedRegionTag: 'Custom',
+  selectedRegionLabel: 'No Region Selected',
   rawData: [],
   workingData: [],
   dynamicSchema: [...OUTPUT_SCHEMA],
@@ -81,7 +83,7 @@ const state = {
   originalCount: 0,
   removedByCountry: 0,
   removedByRules: 0,
-  selectedCountries: new Set(EU_COUNTRIES),
+  selectedCountries: new Set(),
   rules: DEFAULT_RULES.map(r => ({ ...r, keys:[...r.keys], towns:[...r.towns], checkBothDirections: r.checkBothDirections })),
   // Reference data
   yesterdayAoA: [],
@@ -213,39 +215,107 @@ function initRegionSelection() {
 
   cards.forEach(card => {
     card.addEventListener('click', () => {
-      cards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      state.selectedRegion = card.dataset.region;
-      document.getElementById('selected-region-label').textContent = REGION_NAMES[state.selectedRegion];
-      configureRegionCountries();
-      nextBtn.disabled = false;
+      const reg = card.dataset.region;
+      if (state.selectedRegions.has(reg)) {
+        state.selectedRegions.delete(reg);
+      } else {
+        state.selectedRegions.add(reg);
+      }
+      updateRegionSelectionUI();
     });
   });
 
+  const btnAll = document.getElementById('preset-all');
+  if (btnAll) {
+    btnAll.addEventListener('click', () => {
+      state.selectedRegions = new Set(['UK','US','EU','CH','IE','NON-EU']);
+      updateRegionSelectionUI();
+    });
+  }
+
+  const btnUkIe = document.getElementById('preset-uk-ie');
+  if (btnUkIe) {
+    btnUkIe.addEventListener('click', () => {
+      state.selectedRegions = new Set(['UK','IE']);
+      updateRegionSelectionUI();
+    });
+  }
+
+  const btnUsUkNonEu = document.getElementById('preset-us-uk-noneu');
+  if (btnUsUkNonEu) {
+    btnUsUkNonEu.addEventListener('click', () => {
+      state.selectedRegions = new Set(['US','UK','NON-EU']);
+      updateRegionSelectionUI();
+    });
+  }
+
+  const btnClear = document.getElementById('preset-clear');
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      state.selectedRegions.clear();
+      updateRegionSelectionUI();
+    });
+  }
+
   nextBtn.addEventListener('click', () => {
-    if (!state.selectedRegion) {
-      showToast('Please select a report region to continue', 'error');
+    if (state.selectedRegions.size === 0) {
+      showToast('Please select at least one region to continue', 'error');
       return;
     }
     goToStep(2);
   });
 }
 
-function configureRegionCountries() {
-  const region = state.selectedRegion;
-  if (region === 'UK') {
-    state.selectedCountries = new Set(UK_COUNTRIES);
-  } else if (region === 'US') {
-    state.selectedCountries = new Set(US_COUNTRIES);
-  } else if (region === 'EU') {
-    state.selectedCountries = new Set(EU_COUNTRIES);
-  } else if (region === 'CH') {
-    state.selectedCountries = new Set(CH_COUNTRIES);
-  } else if (region === 'IE') {
-    state.selectedCountries = new Set(IE_COUNTRIES);
-  } else if (region === 'NON-EU') {
-    state.selectedCountries = new Set(['Non-EU Countries']);
+function updateRegionSelectionUI() {
+  const cards = document.querySelectorAll('.region-card');
+  cards.forEach(c => {
+    c.classList.toggle('selected', state.selectedRegions.has(c.dataset.region));
+  });
+
+  const nextBtn = document.getElementById('step1-next');
+  const pill = document.getElementById('combo-summary-pill');
+  const pillText = document.getElementById('combo-summary-text');
+  const step2Label = document.getElementById('selected-region-label');
+
+  if (state.selectedRegions.size === 0) {
+    if (pill) pill.classList.remove('active');
+    if (pillText) pillText.textContent = 'No region selected';
+    if (step2Label) step2Label.textContent = 'Custom Region';
+    state.selectedRegionTag = 'Custom';
+    state.selectedRegionLabel = 'No Region Selected';
+    if (nextBtn) nextBtn.disabled = true;
+    return;
   }
+
+  if (nextBtn) nextBtn.disabled = false;
+  if (pill) pill.classList.add('active');
+
+  const keys = Array.from(state.selectedRegions);
+  if (keys.length === 6) {
+    state.selectedRegionTag = 'ALL';
+    state.selectedRegionLabel = 'All Regions (Global)';
+  } else {
+    state.selectedRegionTag = keys.join('+');
+    state.selectedRegionLabel = keys.map(k => REGION_NAMES[k] || k).join(' + ');
+  }
+
+  if (pillText) pillText.textContent = `Selected: ${state.selectedRegionTag}`;
+  if (step2Label) step2Label.textContent = state.selectedRegionLabel;
+
+  configureRegionCountries();
+}
+
+function configureRegionCountries() {
+  state.selectedCountries.clear();
+  const regions = state.selectedRegions;
+
+  if (regions.has('UK'))     UK_COUNTRIES.forEach(c => state.selectedCountries.add(c));
+  if (regions.has('US'))     US_COUNTRIES.forEach(c => state.selectedCountries.add(c));
+  if (regions.has('EU'))     EU_COUNTRIES.forEach(c => state.selectedCountries.add(c));
+  if (regions.has('CH'))     CH_COUNTRIES.forEach(c => state.selectedCountries.add(c));
+  if (regions.has('IE'))     IE_COUNTRIES.forEach(c => state.selectedCountries.add(c));
+  if (regions.has('NON-EU')) state.selectedCountries.add('Non-EU Countries (Excluding 27 EU Member States)');
+
   renderCountryGrid();
 }
 
@@ -344,24 +414,32 @@ function initCountryFilter() {
   document.getElementById('step4-next').addEventListener('click', applyCountryFilter);
 }
 
+function getActiveCountryList() {
+  const list = [];
+  const regions = state.selectedRegions;
+  if (regions.has('UK'))     list.push(...UK_COUNTRIES);
+  if (regions.has('US'))     list.push(...US_COUNTRIES);
+  if (regions.has('EU'))     list.push(...EU_COUNTRIES);
+  if (regions.has('CH'))     list.push(...CH_COUNTRIES);
+  if (regions.has('IE'))     list.push(...IE_COUNTRIES);
+  if (regions.has('NON-EU')) list.push('Non-EU Countries (Excluding 27 EU Member States)');
+  return [...new Set(list)];
+}
+
 function renderCountryGrid() {
   const grid = document.getElementById('country-grid');
   grid.innerHTML = '';
 
-  let list = [];
-  if (state.selectedRegion === 'UK') list = UK_COUNTRIES;
-  else if (state.selectedRegion === 'US') list = US_COUNTRIES;
-  else if (state.selectedRegion === 'EU') list = EU_COUNTRIES;
-  else if (state.selectedRegion === 'CH') list = CH_COUNTRIES;
-  else if (state.selectedRegion === 'IE') list = IE_COUNTRIES;
-  else if (state.selectedRegion === 'NON-EU') list = ['Non-EU Countries (Excluding 27 EU Member States)'];
+  const list = getActiveCountryList();
 
-  document.getElementById('country-filter-sub').textContent =
-    `Target country list for your selected ${REGION_NAMES[state.selectedRegion]}.`;
+  const subEl = document.getElementById('country-filter-sub');
+  if (subEl) {
+    subEl.textContent = `Target countries for your selected region combination (${state.selectedRegionTag || 'Custom'}).`;
+  }
 
   list.forEach(country => {
     const item = document.createElement('div');
-    const isSel = state.selectedCountries.has(country) || state.selectedRegion === 'NON-EU';
+    const isSel = state.selectedCountries.has(country);
     item.className = `country-item ${isSel ? 'selected' : ''}`;
     item.dataset.country = country;
     item.innerHTML = `
@@ -382,40 +460,44 @@ function toggleCountry(item, country) {
 }
 
 function updateCountryCount() {
-  let list = [];
-  if (state.selectedRegion === 'UK') list = UK_COUNTRIES;
-  else if (state.selectedRegion === 'US') list = US_COUNTRIES;
-  else if (state.selectedRegion === 'EU') list = EU_COUNTRIES;
-  else if (state.selectedRegion === 'CH') list = CH_COUNTRIES;
-  else if (state.selectedRegion === 'IE') list = IE_COUNTRIES;
-  else if (state.selectedRegion === 'NON-EU') list = ['Non-EU Countries'];
-
+  const list = getActiveCountryList();
   document.getElementById('selected-country-count').textContent = state.selectedCountries.size;
   document.getElementById('total-country-count').textContent = list.length;
 }
 
 function applyCountryFilter() {
   const before = state.workingData.length;
-  const region = state.selectedRegion;
+  const regions = state.selectedRegions;
   const euNorm = new Set(EU_COUNTRIES.map(norm));
 
-  if (region === 'NON-EU') {
-    // Keep row if Delivery Country is NOT in the 27 EU member states
-    state.workingData = state.workingData.filter(row => {
-      const dc = norm(row['Delivery Country']);
-      return !euNorm.has(dc) && dc !== '';
-    });
-  } else {
-    if (state.selectedCountries.size === 0) { showToast('Select at least one country','error'); return; }
-    const selectedNorm = new Set([...state.selectedCountries].map(norm));
-    state.workingData = state.workingData.filter(row => {
-      return selectedNorm.has(norm(row['Delivery Country']));
-    });
+  // If ALL 6 regions selected, 100% of rows pass
+  if (regions.size === 6) {
+    state.removedByCountry = 0;
+    updateSidebar();
+    showToast('All regions selected — 0 rows filtered out ✓', 'success');
+    goToStep(5);
+    return;
   }
+
+  const hasNonEU = regions.has('NON-EU');
+  const explicitCountries = new Set([...state.selectedCountries].filter(c => !c.includes('Non-EU')).map(norm));
+
+  state.workingData = state.workingData.filter(row => {
+    const dc = norm(row['Delivery Country']);
+    if (!dc) return false;
+
+    // Check explicit match (e.g. UK, US, EU member states, CH, IE)
+    if (explicitCountries.has(dc)) return true;
+
+    // Check Non-EU match
+    if (hasNonEU && !euNorm.has(dc)) return true;
+
+    return false;
+  });
 
   state.removedByCountry = before - state.workingData.length;
   updateSidebar();
-  showToast(`${state.removedByCountry} rows filtered out for ${region} path ✓`,'success');
+  showToast(`${state.removedByCountry} rows filtered out for ${state.selectedRegionTag || 'Custom'} path ✓`, 'success');
   goToStep(5);
 }
 
@@ -937,7 +1019,7 @@ async function downloadFile() {
     const dateStr = `${dd}.${mm}.${yyyy}`;
 
     a.href     = url;
-    a.download = `EDI outstanding POD report ${dateStr} ${state.selectedRegion}.xlsx`;
+    a.download = `EDI outstanding POD report ${dateStr} ${state.selectedRegionTag || 'Custom'}.xlsx`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

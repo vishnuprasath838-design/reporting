@@ -108,8 +108,20 @@
       <!-- ════ STEP 1: Region Selection ════ -->
       <section class="step-panel active" id="panel-step-1">
         <div class="panel-header">
-          <h1>Select Report Region</h1>
-          <p class="panel-sub">Choose your target regional path before uploading the report. Country filters will be pre-configured automatically.</p>
+          <h1>Select Report Region / Custom Combination</h1>
+          <p class="panel-sub">Select a single region, click multiple cards to create a custom combination (e.g. UK + IE, US + UK + NON-EU), or select ALL.</p>
+        </div>
+
+        <div class="region-preset-bar">
+          <div class="preset-label">Quick Combinations:</div>
+          <button class="btn btn-sm btn-outline" id="preset-all">🌐 Select ALL (Global)</button>
+          <button class="btn btn-sm btn-outline" id="preset-uk-ie">🇬🇧 + 🇮🇪 UK + IE</button>
+          <button class="btn btn-sm btn-outline" id="preset-us-uk-noneu">🇺🇸 + 🇬🇧 + 🌐 US + UK + NON-EU</button>
+          <button class="btn btn-sm btn-ghost" id="preset-clear">Clear</button>
+          <div class="combo-summary-pill" id="combo-summary-pill">
+            <span class="combo-dot"></span>
+            <span id="combo-summary-text">No region selected</span>
+          </div>
         </div>
 
         <div class="region-grid">
@@ -123,6 +135,7 @@
               <span class="region-name">UK Region</span>
               <span class="region-desc">United Kingdom shipments</span>
             </div>
+            <div class="card-check-icon">✓</div>
           </div>
 
           <div class="region-card" data-region="US">
@@ -134,6 +147,7 @@
               <span class="region-name">US Region</span>
               <span class="region-desc">United States shipments</span>
             </div>
+            <div class="card-check-icon">✓</div>
           </div>
 
           <div class="region-card" data-region="EU">
@@ -145,6 +159,7 @@
               <span class="region-name">EU Region</span>
               <span class="region-desc">27 European Union member states</span>
             </div>
+            <div class="card-check-icon">✓</div>
           </div>
 
           <div class="region-card" data-region="CH">
@@ -156,6 +171,7 @@
               <span class="region-name">CH Region</span>
               <span class="region-desc">Switzerland shipments</span>
             </div>
+            <div class="card-check-icon">✓</div>
           </div>
 
           <div class="region-card" data-region="IE">
@@ -167,6 +183,7 @@
               <span class="region-name">Ireland Region</span>
               <span class="region-desc">Ireland shipments</span>
             </div>
+            <div class="card-check-icon">✓</div>
           </div>
 
           <div class="region-card" data-region="NON-EU">
@@ -178,6 +195,7 @@
               <span class="region-name">NON-EU Region</span>
               <span class="region-desc">All Non-EU world shipments</span>
             </div>
+            <div class="card-check-icon">✓</div>
           </div>
 
         </div>
