@@ -840,20 +840,23 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
   background: var(--surface-glass-card);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
-  padding: 18px 14px;
+  padding: 18px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
   text-align: center;
   box-shadow: var(--shadow-apple);
+  min-height: 140px;
 }
 .summary-card--success { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.06); }
 .summary-card--danger { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.04); }
 .summary-card--warn { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.04); }
-.summary-icon { font-size: 1.6rem; }
-.summary-val { font-size: 1.65rem; font-weight: 800; line-height: 1; color: var(--marken-navy); }
-.summary-lbl { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; }
+.summary-icon { font-size: 1.6rem; line-height: 1; }
+.summary-info { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
+.summary-val { font-size: 1.65rem; font-weight: 800; line-height: 1; color: var(--marken-navy); white-space: nowrap; }
+.summary-lbl { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; line-height: 1.3; white-space: nowrap; }
 
 .preview-table-wrap { margin-bottom: 30px; }
 .preview-label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
