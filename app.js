@@ -18,7 +18,7 @@ const OUTPUT_SCHEMA = [
 const EU_COUNTRIES = [
   'Austria','Belgium','Bulgaria','Croatia','Cyprus',
   'Czech Republic','Denmark','Estonia','Finland','France',
-  'Germany','Greece','Hungary','Ireland','Italy',
+  'Germany','Greece','Hungary','Italy',
   'Latvia','Lithuania','Luxembourg','Malta','Netherlands',
   'Poland','Portugal','Romania','Slovakia','Slovenia',
   'Spain','Sweden',
@@ -44,7 +44,7 @@ const IE_COUNTRIES = [
 const REGION_NAMES = {
   UK: 'UK Region (United Kingdom)',
   US: 'US Region (United States)',
-  EU: 'EU Region (27 Member States)',
+  EU: 'EU Region (26 Member States, excl. Ireland)',
   CH: 'CH Region (Switzerland)',
   IE: 'Ireland Region',
   'NON-EU': 'NON-EU Region (excl. UK, US, CH, IE)',
