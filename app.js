@@ -47,7 +47,7 @@ const REGION_NAMES = {
   EU: 'EU Region (27 Member States)',
   CH: 'CH Region (Switzerland)',
   IE: 'Ireland Region',
-  'NON-EU': 'NON-EU Region (All Non-EU Countries)',
+  'NON-EU': 'NON-EU Region (excl. UK, US, CH, IE)',
 };
 
 const DEFAULT_RULES = [
@@ -314,7 +314,7 @@ function configureRegionCountries() {
   if (regions.has('EU'))     EU_COUNTRIES.forEach(c => state.selectedCountries.add(c));
   if (regions.has('CH'))     CH_COUNTRIES.forEach(c => state.selectedCountries.add(c));
   if (regions.has('IE'))     IE_COUNTRIES.forEach(c => state.selectedCountries.add(c));
-  if (regions.has('NON-EU')) state.selectedCountries.add('Non-EU Countries (Excluding 27 EU Member States)');
+  if (regions.has('NON-EU')) state.selectedCountries.add('Non-EU Countries (excl. UK, US, CH, IE)');
 
   renderCountryGrid();
 }
@@ -422,7 +422,7 @@ function getActiveCountryList() {
   if (regions.has('EU'))     list.push(...EU_COUNTRIES);
   if (regions.has('CH'))     list.push(...CH_COUNTRIES);
   if (regions.has('IE'))     list.push(...IE_COUNTRIES);
-  if (regions.has('NON-EU')) list.push('Non-EU Countries (Excluding 27 EU Member States)');
+  if (regions.has('NON-EU')) list.push('Non-EU Countries (excl. UK, US, CH, IE)');
   return [...new Set(list)];
 }
 
