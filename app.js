@@ -1013,17 +1013,12 @@ async function downloadFile() {
 
       const colorKey = state.rowColors.get(idx);
       const argb = colorKey ? COLOR_ARGB[colorKey] : null;
-      // Bright yellow keeps dark text; other brand colours get white text for readability
-      const whiteText = colorKey === 'yellow' ? false : colorKey !== undefined && colorKey !== null;
 
       for (let c = 1; c <= schema.length; c++) {
         const cell = excelRow.getCell(c);
         cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
         if (argb) {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: argb } };
-        }
-        if (whiteText) {
-          cell.font = { color: { argb: 'FFFFFFFF' }, bold: false };
         }
       }
     });
