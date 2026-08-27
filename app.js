@@ -58,10 +58,10 @@ const DEFAULT_RULES = [
 ];
 
 const COLOR_ARGB = {
-  yellow: 'FFFFF2CC',
-  purple: 'FFE8D5F5',
-  red:    'FFFFD7D7',
-  orange: 'FFFFE5CC',
+  yellow: 'FFFFE600',
+  purple: 'FFBD77F2',
+  red:    'FFFC2700',
+  orange: 'FFFFB105',
 };
 
 const PKG_COLOR_MAP = { y:'yellow', p:'purple', r:'red', o:'orange' };
@@ -944,7 +944,7 @@ function renderExport() {
   schema.forEach(c => { const th = document.createElement('th'); th.textContent = c; trHead.appendChild(th); });
   thead.appendChild(trHead);
 
-  const COLOR_BG = { yellow:'#FFF2CC', purple:'#E8D5F5', red:'#FFD7D7', orange:'#FFE5CC' };
+  const COLOR_BG = { yellow:'#FFE600', purple:'#BD77F2', red:'#FC2700', orange:'#FFB105' };
 
   state.workingData.slice(0, 10).forEach((row, idx) => {
     const tr   = document.createElement('tr');
@@ -1013,12 +1013,17 @@ async function downloadFile() {
 
       const colorKey = state.rowColors.get(idx);
       const argb = colorKey ? COLOR_ARGB[colorKey] : null;
+      // Bright yellow keeps dark text; other brand colours get white text for readability
+      const whiteText = colorKey === 'yellow' ? false : colorKey !== undefined && colorKey !== null;
 
       for (let c = 1; c <= schema.length; c++) {
         const cell = excelRow.getCell(c);
         cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
         if (argb) {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: argb } };
+        }
+        if (whiteText) {
+          cell.font = { color: { argb: 'FFFFFFFF' }, bold: false };
         }
       }
     });

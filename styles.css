@@ -883,6 +883,10 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
 .preview-table tr:last-child td { border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 .preview-table tr:hover td { background: rgba(0, 145, 218, 0.04); }
 
+/* Colored preview rows (vivid brand colors) — ensure readable text */
+.preview-table tr[style*="background"] td { color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); font-weight: 600; }
+.preview-table tr[style*="#FFE600"] td { color: #1f2937; text-shadow: none; }
+
 .export-actions { display: flex; gap: 16px; align-items: center; }
 
 /* Toast */

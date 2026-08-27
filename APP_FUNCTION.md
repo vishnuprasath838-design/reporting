@@ -143,10 +143,10 @@ Click **Run Processing** to execute all enrichment in sequence:
 Each sub-step is logged in a live **processing log**.
 
 ### Row colour key:
-- 🟡 **Yellow (Y)**
-- 🟣 **Purple (P)**
-- 🔴 **Red (R)**
-- 🟠 **Orange (O / Charge Ref)**
+- 🟡 **Yellow (Y)** — `#FFE600`
+- 🟣 **Purple (P)** — `#BD77F2`
+- 🔴 **Red (R)** — `#FC2700`
+- 🟠 **Orange (O / Charge Ref)** — `#FFB105`
 
 When finished, **Continue to Export** appears; counts (final rows, rows coloured) are shown.
 
