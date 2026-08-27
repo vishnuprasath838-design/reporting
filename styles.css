@@ -363,6 +363,28 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
   background: #22c55e;
 }
 
+.flag-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.preset-flag {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12);
+  background: #e2e8f0;
+}
+.preset-flag svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .region-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -428,9 +450,23 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
 }
 
 .region-flag {
-  font-size: 2.5rem;
-  line-height: 1;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.08));
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  line-height: 0;
+  background: #e2e8f0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+.region-flag svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.region-flag--globe {
+  background: #E8F6FC;
+  box-shadow: 0 4px 10px rgba(0, 145, 218, 0.18);
 }
 
 .region-badge {
