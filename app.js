@@ -1091,7 +1091,32 @@ function initDateDisplay() {
 // ══════════════════════════════
 //  Bootstrap
 // ══════════════════════════════
+// ══════════════════════════════
+//  Dark Mode Toggle
+// ══════════════════════════════
+function initDarkMode() {
+  const html = document.documentElement;
+  const btn  = document.getElementById('dark-mode-toggle');
+  if (!btn) return;
+
+  // Restore saved preference
+  const saved = localStorage.getItem('marken-theme');
+  if (saved === 'dark') html.setAttribute('data-theme', 'dark');
+
+  btn.addEventListener('click', () => {
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      html.removeAttribute('data-theme');
+      localStorage.setItem('marken-theme', 'light');
+    } else {
+      html.setAttribute('data-theme', 'dark');
+      localStorage.setItem('marken-theme', 'dark');
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initDarkMode();
   initDateDisplay();
   initRegionSelection();
   initUpload();
@@ -1103,3 +1128,4 @@ document.addEventListener('DOMContentLoaded', () => {
   initExport();
   goToStep(1);
 });
+

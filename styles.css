@@ -871,3 +871,192 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
   .region-grid { grid-template-columns: 1fr; }
   .summary-cards { grid-template-columns: 1fr 1fr; }
 }
+
+/* ══════════════════════════════════════════════
+   Dark Mode Toggle Button
+   ══════════════════════════════════════════════ */
+.dark-mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-glass);
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  color: var(--text-muted);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.dark-mode-btn:hover {
+  border-color: var(--marken-cyan);
+  color: var(--marken-cyan);
+  box-shadow: 0 0 0 3px var(--marken-cyan-glow);
+  transform: scale(1.08);
+}
+.dm-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dm-sun  { opacity: 0; transform: rotate(90deg) scale(0.6); }
+.dm-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+[data-theme="dark"] .dm-sun  { opacity: 1; transform: rotate(0deg) scale(1); }
+[data-theme="dark"] .dm-moon { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+
+/* ══════════════════════════════════════════════
+   Dark Mode — Global Variables Override
+   ══════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg-gradient: #0a0f1e;
+  --surface-glass: rgba(15, 23, 42, 0.80);
+  --surface-glass-card: rgba(20, 30, 55, 0.92);
+  --border-glass: rgba(51, 65, 100, 0.7);
+  --border-glass-hover: rgba(0, 145, 218, 0.5);
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --shadow-apple: 0 10px 30px -5px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.5);
+  --shadow-apple-hover: 0 20px 40px -10px rgba(0,145,218,0.25), 0 0 1px rgba(0,145,218,0.4);
+}
+
+/* Smooth global transition on theme switch */
+[data-theme="dark"] *, [data-theme="dark"] *::before, [data-theme="dark"] *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] body { background: #0a0f1e; color: var(--text-main); }
+[data-theme="dark"] .orb1 { background: rgba(0,145,218,0.07); }
+[data-theme="dark"] .orb2 { background: rgba(0,37,84,0.18); }
+[data-theme="dark"] .orb3 { background: rgba(255,199,44,0.05); }
+
+/* Header */
+[data-theme="dark"] .top-header {
+  background: rgba(10,15,30,0.94);
+  border-bottom-color: rgba(51,65,100,0.7);
+}
+[data-theme="dark"] .dark-mode-btn {
+  background: rgba(20,30,55,0.8);
+  border-color: rgba(51,65,100,0.7);
+  color: #94a3b8;
+}
+[data-theme="dark"] .marken-logo-text { color: #e2e8f0; }
+[data-theme="dark"] .brand-tagline { color: var(--text-dim); }
+[data-theme="dark"] .apple-pill-badge {
+  background: rgba(20,30,55,0.8);
+  border-color: rgba(51,65,100,0.6);
+  color: var(--text-muted);
+}
+[data-theme="dark"] .apple-pill-date { color: var(--marken-cyan); }
+
+/* Sidebar */
+[data-theme="dark"] .sidebar {
+  background: rgba(12,18,38,0.95);
+  border-right-color: rgba(51,65,100,0.6);
+}
+[data-theme="dark"] .step-title { color: var(--text-main); }
+[data-theme="dark"] .step-sub { color: var(--text-dim); }
+[data-theme="dark"] .step-connector { background: rgba(51,65,100,0.5); }
+[data-theme="dark"] .step-circle { background: rgba(20,30,55,0.9); border-color: rgba(51,65,100,0.7); }
+[data-theme="dark"] .step-item.active .step-circle { border-color: var(--marken-cyan); background: rgba(0,145,218,0.12); }
+[data-theme="dark"] .stat-pill { background: rgba(20,30,55,0.8); border-color: rgba(51,65,100,0.6); }
+[data-theme="dark"] .stat-val { color: var(--text-main); }
+[data-theme="dark"] .stat-lbl { color: var(--text-dim); }
+
+/* Step Panels */
+[data-theme="dark"] .step-panel { background: rgba(12,18,38,0.5); }
+[data-theme="dark"] .panel-title { color: var(--text-main); }
+[data-theme="dark"] .panel-sub { color: var(--text-muted); }
+[data-theme="dark"] .panel-header { border-bottom-color: rgba(51,65,100,0.4); }
+
+/* Region Cards */
+[data-theme="dark"] .region-card {
+  background: rgba(20,30,55,0.75);
+  border-color: rgba(51,65,100,0.6);
+}
+[data-theme="dark"] .region-card:hover { border-color: var(--marken-cyan); }
+[data-theme="dark"] .region-card.selected { background: rgba(0,145,218,0.12); border-color: var(--marken-cyan); }
+[data-theme="dark"] .region-card-name { color: var(--text-main); }
+[data-theme="dark"] .region-card-sub { color: var(--text-muted); }
+[data-theme="dark"] .combo-preset-btn {
+  background: rgba(20,30,55,0.7);
+  border-color: rgba(51,65,100,0.6);
+  color: var(--text-muted);
+}
+[data-theme="dark"] .combo-preset-btn:hover { border-color: var(--marken-cyan); color: var(--marken-cyan); }
+
+/* Upload Zone */
+[data-theme="dark"] .upload-zone {
+  background: rgba(20,30,55,0.6);
+  border-color: rgba(51,65,100,0.6);
+}
+[data-theme="dark"] .upload-zone:hover { border-color: var(--marken-cyan); background: rgba(0,145,218,0.05); }
+[data-theme="dark"] .upload-title { color: var(--text-main); }
+[data-theme="dark"] .upload-sub { color: var(--text-muted); }
+
+/* Country Grid */
+[data-theme="dark"] .country-item {
+  background: rgba(20,30,55,0.7);
+  border-color: rgba(51,65,100,0.5);
+  color: var(--text-muted);
+}
+[data-theme="dark"] .country-item:hover { border-color: var(--marken-cyan); color: var(--text-main); }
+[data-theme="dark"] .country-item.selected { background: rgba(0,145,218,0.12); border-color: var(--marken-cyan); color: var(--marken-cyan); }
+
+/* Inputs & Selects */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: rgba(20,30,55,0.85);
+  border-color: rgba(51,65,100,0.6);
+  color: var(--text-main);
+}
+[data-theme="dark"] input::placeholder { color: var(--text-dim); }
+
+/* Rule rows */
+[data-theme="dark"] .rule-row {
+  background: rgba(20,30,55,0.7);
+  border-color: rgba(51,65,100,0.5);
+}
+
+/* Column Items */
+[data-theme="dark"] .col-item {
+  background: rgba(20,30,55,0.7);
+  border-color: rgba(51,65,100,0.5);
+  color: var(--text-muted);
+}
+[data-theme="dark"] .col-item.selected { background: rgba(0,145,218,0.1); border-color: var(--marken-cyan); color: var(--text-main); }
+
+/* Preview Table */
+[data-theme="dark"] .preview-table th {
+  background: rgba(10,15,30,0.96);
+  color: #e2e8f0;
+  border-bottom-color: rgba(51,65,100,0.6);
+}
+[data-theme="dark"] .preview-table td {
+  background: rgba(15,23,42,0.55);
+  color: var(--text-muted);
+  border-bottom-color: rgba(51,65,100,0.3);
+}
+[data-theme="dark"] .preview-table tr:nth-child(even) td { background: rgba(20,30,55,0.45); }
+[data-theme="dark"] .preview-table tr:hover td { background: rgba(0,145,218,0.06); }
+
+/* Summary Cards */
+[data-theme="dark"] .summary-card {
+  background: rgba(20,30,55,0.8);
+  border-color: rgba(51,65,100,0.5);
+}
+[data-theme="dark"] .summary-card-val { color: var(--text-main); }
+[data-theme="dark"] .summary-card-label { color: var(--text-muted); }
+
+/* Toasts */
+[data-theme="dark"] .toast {
+  background: rgba(15,23,42,0.97);
+  border-color: rgba(51,65,100,0.6);
+}
+
