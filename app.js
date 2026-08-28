@@ -645,7 +645,7 @@ function initRefFiles() {
 
 async function handleRefFile(file, type) {
   const ext = file.name.split('.').pop().toLowerCase();
-  if (!['xlsx','xls'].includes(ext)) { showToast('Please upload an .xlsx or .xls file','error'); return; }
+  if (!['xlsx','xls','csv'].includes(ext)) { showToast('Please upload an .xlsx, .xls or .csv file','error'); return; }
   try {
     const aoa = await parseFileAsAoA(file);
     if (type === 'yesterday') {
