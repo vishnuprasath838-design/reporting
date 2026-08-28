@@ -372,16 +372,10 @@ function handleFile(file) {
   const ext = file.name.split('.').pop().toLowerCase();
   if (!['xlsx','xls','csv'].includes(ext)) { showToast('Please upload an .xlsx, .xls or .csv file','error'); return; }
 
-  startFileProgress();
-
   state.fileName = file.name;
   const reader = new FileReader();
-  reader.onprogress = e => {
-    if (e.lengthComputable) setFileProgress((e.loaded / e.total) * 100);
-  };
   reader.onload = e => {
     try {
-      setFileProgress(90);
       const wb = XLSX.read(e.target.result, { type:'array', cellDates:true });
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, { defval:'' });
@@ -394,50 +388,15 @@ function handleFile(file) {
       document.getElementById('file-meta-display').textContent =
         `${rows.length.toLocaleString()} rows · ${(file.size/1024).toFixed(1)} KB · Sheet: ${sheetLabel}`;
       document.getElementById('step2-next').disabled = false;
-      document.getElementById('file-status-badge').textContent = 'Ready';
-      completeFileProgress();
       updateSidebar();
       showToast('File loaded successfully','success');
-    } catch(err) {
-      document.getElementById('file-info').classList.add('hidden');
-      completeFileProgress();
-      showToast('Failed to read file','error');
-      console.error(err);
-    }
+    } catch(err) { showToast('Failed to read file','error'); console.error(err); }
   };
   reader.onerror = () => {
-    completeFileProgress();
     document.getElementById('file-info').classList.add('hidden');
     showToast('Failed to read file','error');
   };
   reader.readAsArrayBuffer(file);
-}
-
-function startFileProgress() {
-  const wrap = document.getElementById('file-progress-wrap');
-  const bar  = document.getElementById('file-progress-bar');
-  const badge = document.getElementById('file-status-badge');
-  if (badge) badge.textContent = 'Loading…';
-  if (wrap) wrap.classList.remove('hidden');
-  if (bar) bar.style.width = '5%';
-}
-
-function setFileProgress(pct) {
-  const bar = document.getElementById('file-progress-bar');
-  if (bar) {
-    const clamped = Math.max(5, Math.min(90, pct));
-    bar.style.width = `${clamped}%`;
-  }
-}
-
-function completeFileProgress() {
-  const wrap = document.getElementById('file-progress-wrap');
-  const bar  = document.getElementById('file-progress-bar');
-  if (bar) bar.style.width = '100%';
-  setTimeout(() => {
-    if (wrap) wrap.classList.add('hidden');
-    if (bar) bar.style.width = '0%';
-  }, 350);
 }
 
 // ══════════════════════════════
