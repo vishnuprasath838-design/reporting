@@ -345,7 +345,7 @@
           <p class="panel-sub">Import a raw Excel file (.xlsx or .xls) to begin the cleansing process for <strong id="selected-region-label" style="color:var(--marken-cyan);">EU Region</strong>.</p>
         </div>
         <div class="upload-zone" id="upload-zone">
-          <input type="file" id="file-input" accept=".xlsx,.xls" hidden />
+          <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden />
           <div class="upload-icon">
             <svg viewBox="0 0 64 64" fill="none">
               <rect x="8" y="16" width="48" height="40" rx="10" stroke="url(#ug)" stroke-width="2.5"/>
@@ -366,7 +366,10 @@
             <span class="file-name" id="file-name-display">—</span>
             <span class="file-meta" id="file-meta-display">—</span>
           </div>
-          <div class="file-status"><span class="badge badge-success">Ready</span></div>
+          <div class="file-status"><span class="badge badge-success" id="file-status-badge">Ready</span></div>
+          <div class="file-progress-wrap hidden" id="file-progress-wrap">
+            <div class="file-progress-bar" id="file-progress-bar"></div>
+          </div>
         </div>
         <div class="panel-actions">
           <button class="btn btn-ghost" id="step2-back">← Back</button>

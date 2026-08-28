@@ -536,6 +536,8 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
 .file-details { flex: 1; display: flex; flex-direction: column; gap: 3px; }
 .file-name { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
 .file-meta { font-size: 0.8rem; color: var(--text-muted); }
+.file-progress-wrap { width: 100%; height: 6px; background: rgba(0,145,218,0.12); border-radius: var(--radius-pill); overflow: hidden; margin-top: 4px; }
+.file-progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--marken-cyan), #22c55e); border-radius: var(--radius-pill); transition: width 0.2s ease; }
 .hidden { display: none !important; }
 
 /* Badges */
@@ -719,6 +721,7 @@ body { background: var(--bg-gradient); color: var(--text-main); min-height: 100v
   box-shadow: var(--shadow-apple);
 }
 .ref-upload-slot:hover { border-color: var(--marken-cyan); background: rgba(0, 145, 218, 0.04); transform: translateY(-2px); }
+.ref-upload-slot.drag-over { border-color: var(--marken-cyan); background: rgba(0, 145, 218, 0.12); transform: scale(1.01); box-shadow: 0 0 0 3px rgba(0,145,218,0.2); }
 
 .ref-slot-title { font-size: 1.05rem; font-weight: 700; color: var(--marken-navy); }
 .ref-slot-sub   { font-size: 0.8rem; color: var(--text-muted); max-width: 220px; line-height: 1.5; }
