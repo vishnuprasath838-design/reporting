@@ -1047,7 +1047,7 @@ async function downloadFile() {
     };
     for (let c = 1; c <= schema.length; c++) {
       const cell = headerRow.getCell(c);
-      cell.font = { bold: true, color: { argb: 'FFE8E8F0' }, size: 10 };
+      cell.font = { name: 'Arial', bold: true, color: { argb: 'FFE8E8F0' }, size: 8 };
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E1E2E' } };
       cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
       cell.border = headerBorder;
@@ -1082,6 +1082,7 @@ async function downloadFile() {
       for (let c = 1; c <= schema.length; c++) {
         const cell = excelRow.getCell(c);
         cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
+        cell.font = { name: 'Arial', size: 8 };
         cell.border = dataBorder;
         if (argb) {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: argb } };
