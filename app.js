@@ -100,12 +100,22 @@ const state = {
 // ══════════════════════════════
 //  Helpers
 // ══════════════════════════════
+// Column indexes for yesterday/morning report - make configurable
+const YESTERDAY_COLUMNS = {
+  TRIAL_AWB: 0,     // Column A (Trial AWB)
+  DESCRIPTION: 1,   // Column B (Description)  
+  UPS_TRACKING: 2,  // Column C (UPS Tracking)
+  EXP_DATE: 12,     // Column M (EXP DATE)
+  COLOR: 17         // Column R (Color/Comment)
+};
+
 const norm = s => String(s ?? '').trim().toLowerCase().replace(/\s+/g,' ');
 
 function isNA(val) {
   if (val === null || val === undefined) return true;
   const s = String(val).trim().toLowerCase();
-  return s === '' || s === 'n/a' || s === 'na' || s === '#n/a' || s === '0' || Number(s) === 0;
+  // Removed '0' and Number(s) === 0 checks - these could be valid values
+  return s === '' || s === 'n/a' || s === 'na' || s === '#n/a';
 }
 
 // Animate a numeric element count-up to a target value (NumberTicker-style)
@@ -676,6 +686,25 @@ async function handleRefFile(file, type) {
     if (type === 'yesterday') {
       state.yesterdayAoA = aoa;
       state.yesterdayLookup = buildLookup(aoa);
+      
+      // Validate yesterday file structure
+      if (aoa.length > 1) {
+        const headerRow = aoa[0];
+        const sampleRow = aoa[1];
+        console.log(`Yesterday file validation: ${aoa.length - 1} rows, ${headerRow.length} columns`);
+        console.log('Header row:', headerRow);
+        console.log('Required columns exist:', {
+          description: sampleRow.length > YESTERDAY_COLUMNS.DESCRIPTION,
+          upsTracking: sampleRow.length > YESTERDAY_COLUMNS.UPS_TRACKING,
+          expDate: sampleRow.length > YESTERDAY_COLUMNS.EXP_DATE,
+          color: sampleRow.length > YESTERDAY_COLUMNS.COLOR
+        });
+        
+        if (sampleRow.length <= Math.max(YESTERDAY_COLUMNS.DESCRIPTION, YESTERDAY_COLUMNS.UPS_TRACKING)) {
+          showToast('Warning: Yesterday file may have fewer columns than expected', 'warning');
+        }
+      }
+      
       updateRefSlot('yesterday', file.name, aoa.length - 1);
     } else {
       state.qvmAoA = aoa;
@@ -755,17 +784,51 @@ async function runProcessing() {
   document.getElementById('step7-back').disabled = true;
   state.processLog = [];
 
+  // DIAGNOSTIC: Log yesterday file structure
+  console.log('=== VLOOKUP DIAGNOSTIC START ===');
+  console.log(`Yesterday lookup entries: ${state.yesterdayLookup.size}`);
+  if (state.yesterdayAoA.length > 1) {
+    console.log('Yesterday file header row:', state.yesterdayAoA[0]);
+    console.log('Yesterday file sample row:', state.yesterdayAoA[1]);
+    console.log('Sample lookup keys:', Array.from(state.yesterdayLookup.keys()).slice(0, 3));
+  }
+  console.log(`Working data rows: ${state.workingData.length}`);
+  if (state.workingData.length > 0) {
+    console.log('Sample Trial AWB from working data:', state.workingData[0]['Trial AWB']);
+    console.log('Normalized sample AWB:', norm(state.workingData[0]['Trial AWB'] ?? ''));
+  }
+
   // ── Sub-step 1: Description enrichment ──
   addLogEntry('running', 'Description Enrichment', 'Refreshing Description from yesterday/morning report (col 2) & converting Courier Service to N/A…', '📝');
   await tick();
   let descMatches = 0;
   let courierReplaced = 0;
+  let lookupAttempts = 0;
+  let foundMatches = 0;
+  let naValues = 0;
+  
   state.workingData.forEach(row => {
-    const yRow = state.yesterdayLookup.get(norm(row['Trial AWB'] ?? ''));
+    lookupAttempts++;
+    const awbKey = norm(row['Trial AWB'] ?? '');
+    const yRow = state.yesterdayLookup.get(awbKey);
+    
     if (yRow) {
-      const val = yRow[1]; // col index 2 → 0-based index 1
-      if (!isNA(val)) { row['Description'] = val; descMatches++; }
+      foundMatches++;
+      // Use configurable column index and validate it exists
+      const val = yRow.length > YESTERDAY_COLUMNS.DESCRIPTION ? yRow[YESTERDAY_COLUMNS.DESCRIPTION] : undefined;
+      if (lookupAttempts <= 3) { // Log first 3 attempts
+        console.log(`DESC DEBUG ${lookupAttempts}: AWB="${awbKey}", yRow[${YESTERDAY_COLUMNS.DESCRIPTION}]="${val}", isNA=${isNA(val)}, rowLength=${yRow.length}`);
+      }
+      if (val !== undefined && !isNA(val)) { 
+        row['Description'] = val; 
+        descMatches++;
+      } else {
+        naValues++;
+      }
+    } else if (lookupAttempts <= 3) {
+      console.log(`DESC DEBUG ${lookupAttempts}: AWB="${awbKey}" - NO MATCH FOUND`);
     }
+    
     // Convert any "Courier Service" description to N/A
     const currentDesc = String(row['Description'] ?? '').trim().toLowerCase();
     if (currentDesc.includes('courier service')) {
@@ -773,6 +836,8 @@ async function runProcessing() {
       courierReplaced++;
     }
   });
+  
+  console.log(`Description enrichment: ${lookupAttempts} attempts, ${foundMatches} matches, ${naValues} N/A values, ${descMatches} updates`);
   state.processLog.pop();
   addLogEntry('success', 'Description Enrichment', `${descMatches} descriptions refreshed — ${courierReplaced} "Courier Service" values converted to N/A`, '📝');
   await tick();
@@ -781,13 +846,34 @@ async function runProcessing() {
   addLogEntry('running', 'UPS Tracking', 'Refreshing UPS Tracking from yesterday/morning report (col 3)…', '📦');
   await tick();
   let upsMatches = 0;
+  let upsLookupAttempts = 0;
+  let upsFoundMatches = 0;
+  let upsNaValues = 0;
+  
   state.workingData.forEach(row => {
-    const yRow = state.yesterdayLookup.get(norm(row['Trial AWB'] ?? ''));
+    upsLookupAttempts++;
+    const awbKey = norm(row['Trial AWB'] ?? '');
+    const yRow = state.yesterdayLookup.get(awbKey);
+    
     if (yRow) {
-      const val = yRow[2]; // col index 3 → 0-based index 2
-      if (!isNA(val)) { row['UPS Tracking'] = val; upsMatches++; }
+      upsFoundMatches++;
+      // Use configurable column index and validate it exists
+      const val = yRow.length > YESTERDAY_COLUMNS.UPS_TRACKING ? yRow[YESTERDAY_COLUMNS.UPS_TRACKING] : undefined;
+      if (upsLookupAttempts <= 3) { // Log first 3 attempts
+        console.log(`UPS DEBUG ${upsLookupAttempts}: AWB="${awbKey}", yRow[${YESTERDAY_COLUMNS.UPS_TRACKING}]="${val}", isNA=${isNA(val)}, rowLength=${yRow.length}`);
+      }
+      if (val !== undefined && !isNA(val)) { 
+        row['UPS Tracking'] = val; 
+        upsMatches++;
+      } else {
+        upsNaValues++;
+      }
+    } else if (upsLookupAttempts <= 3) {
+      console.log(`UPS DEBUG ${upsLookupAttempts}: AWB="${awbKey}" - NO MATCH FOUND`);
     }
   });
+  
+  console.log(`UPS enrichment: ${upsLookupAttempts} attempts, ${upsFoundMatches} matches, ${upsNaValues} N/A values, ${upsMatches} updates`);
   state.processLog.pop();
   addLogEntry('success', 'UPS Tracking', `${upsMatches} tracking numbers refreshed from yesterday/morning report`, '📦');
   await tick();
@@ -862,8 +948,9 @@ async function runProcessing() {
   state.workingData.forEach(row => {
     const yRow = state.yesterdayLookup.get(norm(row['Trial AWB'] ?? ''));
     if (yRow) {
-      const val = yRow[12]; // col index 13 → 0-based 12
-      if (!isNA(val)) { row['EXP DATE'] = val; expFilled++; }
+      // Use configurable column index
+      const val = yRow.length > YESTERDAY_COLUMNS.EXP_DATE ? yRow[YESTERDAY_COLUMNS.EXP_DATE] : undefined;
+      if (val !== undefined && !isNA(val)) { row['EXP DATE'] = val; expFilled++; }
     }
   });
   state.processLog.pop();
@@ -889,7 +976,8 @@ async function runProcessing() {
   state.workingData.forEach((row, idx) => {
     const yRow = state.yesterdayLookup.get(norm(row['Trial AWB'] ?? ''));
     if (yRow) {
-      const val = String(yRow[17] ?? '').trim();
+      // Use configurable column index for color
+      const val = yRow.length > YESTERDAY_COLUMNS.COLOR ? String(yRow[YESTERDAY_COLUMNS.COLOR] ?? '').trim() : '';
       if (!isNA(val)) {
         row[pkgColKey] = val;
         pkgPopulated++;
