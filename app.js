@@ -1039,11 +1039,18 @@ async function downloadFile() {
     // Style header row (Left Aligned)
     const headerRow = worksheet.getRow(1);
     headerRow.height = 22;
+    const headerBorder = {
+      top: { style: 'thin', color: { argb: 'FF94A3B8' } },
+      left: { style: 'thin', color: { argb: 'FF94A3B8' } },
+      bottom: { style: 'thin', color: { argb: 'FF94A3B8' } },
+      right: { style: 'thin', color: { argb: 'FF94A3B8' } },
+    };
     for (let c = 1; c <= schema.length; c++) {
       const cell = headerRow.getCell(c);
       cell.font = { bold: true, color: { argb: 'FFE8E8F0' }, size: 10 };
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E1E2E' } };
       cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
+      cell.border = headerBorder;
     }
 
     // Add data rows with left alignment & colors
@@ -1065,10 +1072,17 @@ async function downloadFile() {
 
       const colorKey = state.rowColors.get(idx);
       const argb = colorKey ? COLOR_ARGB[colorKey] : null;
+      const dataBorder = {
+        top: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+        left: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+        bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+        right: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+      };
 
       for (let c = 1; c <= schema.length; c++) {
         const cell = excelRow.getCell(c);
         cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
+        cell.border = dataBorder;
         if (argb) {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: argb } };
         }
