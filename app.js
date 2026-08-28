@@ -1103,6 +1103,14 @@ async function downloadFile() {
       });
     });
 
+    // Enable filters on all columns so users can filter multiple columns simultaneously
+    if (state.workingData.length > 0) {
+      worksheet.autoFilter = {
+        from: { row: 1, column: 1 },
+        to: { row: 1 + state.workingData.length, column: schema.length },
+      };
+    }
+
     worksheet.views = [{ state: 'frozen', ySplit: 1 }];
 
     const buffer = await workbook.xlsx.writeBuffer();
