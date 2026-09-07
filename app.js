@@ -1006,10 +1006,19 @@ async function runProcessing() {
       const chargeRef = String(row['Charge Reference'] ?? '').toUpperCase();
       if (CHARGE_REF_ORANGE.some(t => chargeRef.includes(t.toUpperCase()))) {
         state.rowColors.set(idx, 'orange');
+        if (isNA(row[pkgColKey])) row[pkgColKey] = 'O';
         chargeColored++;
       }
     }
   });
+
+  // Apply uppercase color letters where applicable (optional)
+  state.workingData.forEach((row) => {
+    if (row[pkgColKey]) {
+      row[pkgColKey] = String(row[pkgColKey]).toUpperCase();
+    }
+  });
+  
   state.processLog.pop();
   addLogEntry('success', 'Charge Reference Colours', `${chargeColored} uncoloured rows coloured orange`, '🔑');
   await tick();
