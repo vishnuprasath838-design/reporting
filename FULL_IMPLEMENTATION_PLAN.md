@@ -1,19 +1,19 @@
-# Marken Report Formatter — Full Implementation Plan & Technical Reference
+# Report Formatting Report Formatter — Full Implementation Plan & Technical Reference
 
-> **Living Documentation**: This document tracks the full architecture, business rules, visual design system, and processing pipeline for the **Marken Precision Logistics Report Formatting Dashboard**.
+> **Living Documentation**: This document tracks the full architecture, business rules, visual design system, and processing pipeline for the **Report Formatting Precision Logistics Report Formatting Dashboard**.
 
 ---
 
 ## 1. Executive Summary & Architecture
 
-The **Marken Report Formatter** is a high-performance, browser-native web application built for **Marken (UPS Healthcare Precision Logistics)**. It automates multi-step cleansing, regional filtering, account key validation, reference data VLOOKUP enrichment, and Excel row colour-coding.
+The **Report Formatting Report Formatter** is a high-performance, browser-native web application built for **Report Formatting (UPS Healthcare Precision Logistics)**. It automates multi-step cleansing, regional filtering, account key validation, reference data VLOOKUP enrichment, and Excel row colour-coding.
 
 ### Technical Stack & Key Specs
 * **Frontend**: Pure HTML5, Vanilla JavaScript (ES6+), Vanilla CSS3.
 * **Excel Parsers & Generators**:
   * **SheetJS (`xlsx`)**: High-speed client-side reading & parsing of raw `.xlsx` / `.xls` reports, yesterday's reports, and QVM files.
   * **ExcelJS**: Advanced client-side writing of formatted `.xlsx` output files with custom row fill colors, font styles, column widths, and frozen headers.
-* **Design System**: Apple-inspired Glassmorphism UI integrated with Marken corporate branding (`#0A192F` Deep Navy, `#0091DA` Precision Cyan, `#FFC72C` UPS Gold).
+* **Design System**: Apple-inspired Glassmorphism UI integrated with Report Formatting corporate branding (`#0A192F` Deep Navy, `#0091DA` Precision Cyan, `#FFC72C` UPS Gold).
 * **Data Security & Privacy**: **100% Client-Side Execution**. Zero server uploads; all file parsing, VLOOKUP calculations, and file downloads take place strictly within the user's browser session.
 
 ---
@@ -155,11 +155,11 @@ Runs 8 automated sub-steps in sequence with live MagicUI-styled animated card no
 
 | Path | File | Purpose |
 |---|---|---|
-| `report formatting/index.html` | [index.html](file:///Users/vishnu/Desktop/Antigravity/marken/report%20formatting/index.html) | Main HTML layout, 8-step wizard panels, top nav bar, and CDN scripts |
-| `report formatting/styles.css` | [styles.css](file:///Users/vishnu/Desktop/Antigravity/marken/report%20formatting/styles.css) | Full CSS design system (Marken brand colors + Apple Glassmorphism) |
-| `report formatting/app.js` | [app.js](file:///Users/vishnu/Desktop/Antigravity/marken/report%20formatting/app.js) | Application engine, region filters, VLOOKUP logic, and ExcelJS generator |
-| `report formatting/package.json` | [package.json](file:///Users/vishnu/Desktop/Antigravity/marken/report%20formatting/package.json) | Local dev server configuration (`npm run dev`) |
-| `report formatting/FULL_IMPLEMENTATION_PLAN.md` | [FULL_IMPLEMENTATION_PLAN.md](file:///Users/vishnu/Desktop/Antigravity/marken/report%20formatting/FULL_IMPLEMENTATION_PLAN.md) | Living documentation & implementation specification |
+| `report formatting/index.html` | [index.html](file:///Users/vishnu/Desktop/Antigravity/report-formatting/report%20formatting/index.html) | Main HTML layout, 8-step wizard panels, top nav bar, and CDN scripts |
+| `report formatting/styles.css` | [styles.css](file:///Users/vishnu/Desktop/Antigravity/report-formatting/report%20formatting/styles.css) | Full CSS design system (Report Formatting brand colors + Apple Glassmorphism) |
+| `report formatting/app.js` | [app.js](file:///Users/vishnu/Desktop/Antigravity/report-formatting/report%20formatting/app.js) | Application engine, region filters, VLOOKUP logic, and ExcelJS generator |
+| `report formatting/package.json` | [package.json](file:///Users/vishnu/Desktop/Antigravity/report-formatting/report%20formatting/package.json) | Local dev server configuration (`npm run dev`) |
+| `report formatting/FULL_IMPLEMENTATION_PLAN.md` | [FULL_IMPLEMENTATION_PLAN.md](file:///Users/vishnu/Desktop/Antigravity/report-formatting/report%20formatting/FULL_IMPLEMENTATION_PLAN.md) | Living documentation & implementation specification |
 
 ---
 
@@ -173,7 +173,7 @@ Runs 8 automated sub-steps in sequence with live MagicUI-styled animated card no
 * **2026-08-26**: Upgraded UI to MagicUI Animated Notification Cards.
 * **2026-08-26**: Added Step 1 Region Selection with 6 Paths (`UK`, `US`, `EU`, `CH`, `IE`, `NON-EU`).
 * **2026-08-26**: Updated Region filter to evaluate strictly against `Delivery Country`.
-* **2026-08-26**: Complete UI redesign adopting Marken corporate brand colours (`#0A192F`, `#0091DA`, `#FFC72C`) and Apple Glassmorphism aesthetic.
+* **2026-08-26**: Complete UI redesign adopting Report Formatting corporate brand colours (`#0A192F`, `#0091DA`, `#FFC72C`) and Apple Glassmorphism aesthetic.
 * **2026-08-26**: Added Sub-step 9 Collection Date Cleanup (deletes all blank and future collection date rows; keeps only past dates & current date).
 * **2026-08-26**: Formatted all spreadsheet cells and preview table data to be strictly **Left-to-Right Aligned** (`horizontal: 'left'`).
 * **2026-08-26**: Added Description rule to automatically convert any `"Courier Service"` values to `"N/A"`.

@@ -1,6 +1,6 @@
-# Marken Report Formatter — App Function Guide
+# Report Formatting Report Formatter — App Function Guide
 
-A step-by-step walkthrough of how the Marken Precision Logistics Report Formatting Engine works.
+A step-by-step walkthrough of how the Report Formatting Precision Logistics Report Formatting Engine works.
 
 ---
 
@@ -184,7 +184,7 @@ When finished, **Continue to Export** appears; counts (final rows, rows coloured
 
 ## UI Features
 
-- **Apple-style glassmorphism** design (frosted panels, blur, soft shadows) in Marken brand colours (Deep Navy, Precision Cyan, UPS Gold).
+- **Apple-style glassmorphism** design (frosted panels, blur, soft shadows) in Report Formatting brand colours (Deep Navy, Precision Cyan, UPS Gold).
 - **Dark mode** toggle in the top bar — persisted across sessions via `localStorage`. All text remains readable in both themes.
 - **Sidebar** shows the 8-step progress rail with live row/removed stats.
 - Step **navigation rail** highlights active, completed, and up-coming steps.
@@ -196,7 +196,7 @@ When finished, **Continue to Export** appears; counts (final rows, rows coloured
 ```
 reporting/
 ├── index.html        → App markup, all 8 step panels, SVG flags, theme toggle
-├── styles.css        → Apple/Marken design system, light & dark themes
+├── styles.css        → Apple/Report Formatting design system, light & dark themes
 ├── app.js            → All logic: state, steps, enrichment, export
 ├── package.json      → Serves the app locally (npm run dev)
 └── APP_FUNCTION.md   → This guide

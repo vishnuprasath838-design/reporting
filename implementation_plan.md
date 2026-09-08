@@ -1,4 +1,4 @@
-# Marken Report Formatter — Phase 2: Post-Processing Steps
+# Report Formatting Report Formatter — Phase 2: Post-Processing Steps
 
 Extends the existing 5-step cleansing wizard with 8 new automated steps.  
 All steps run in the browser. Output is a fully coloured `.xlsx` file.

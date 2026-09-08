@@ -1,18 +1,17 @@
 {
-  "name": "marken-report-formatter",
+  "name": "report-formatter",
   "version": "1.0.0",
-  "description": "Marken Precision Logistics Report Formatting Engine",
+  "description": "Precision Logistics Report Formatting Engine",
   "main": "index.html",
   "scripts": {
     "dev": "npx -y serve .",
     "start": "npx -y serve ."
   },
   "keywords": [
-    "marken",
-    "excel",
     "report-formatter",
+    "excel",
     "logistics"
   ],
-  "author": "Marken Precision Logistics",
+  "author": "Report Formatting Precision Logistics",
   "license": "ISC"
 }

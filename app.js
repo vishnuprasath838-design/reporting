@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────
-   Marken Report Formatter — app.js  (full)
+   Report Formatting Report Formatter — app.js  (full)
    ───────────────────────────────────────────── */
 
 // ══════════════════════════════
@@ -1303,17 +1303,17 @@ function initDarkMode() {
   if (!btn) return;
 
   // Restore saved preference
-  const saved = localStorage.getItem('marken-theme');
+  const saved = localStorage.getItem('brand-theme');
   if (saved === 'dark') html.setAttribute('data-theme', 'dark');
 
   btn.addEventListener('click', () => {
     const isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) {
       html.removeAttribute('data-theme');
-      localStorage.setItem('marken-theme', 'light');
+      localStorage.setItem('brand-theme', 'light');
     } else {
       html.setAttribute('data-theme', 'dark');
-      localStorage.setItem('marken-theme', 'dark');
+      localStorage.setItem('brand-theme', 'dark');
     }
   });
 }
