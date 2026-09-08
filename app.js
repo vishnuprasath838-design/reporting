@@ -1470,6 +1470,18 @@ function guideLiveColors(includeChargeRefs) {
   return html;
 }
 
+function guideScrollToSelected(id) {
+  const stacked = window.matchMedia('(max-width: 880px)').matches;
+  if (stacked) {
+    const detail = document.getElementById('guide-detail');
+    if (detail) detail.scrollIntoView({ block: 'start' });
+    return;
+  }
+  const flow = document.getElementById('guide-flow');
+  const node = flow && flow.querySelector('[data-guide-id="' + id + '"]');
+  if (node) node.scrollIntoView({ block: 'nearest' });
+}
+
 function selectGuideStep(id) {
   const flow = document.getElementById('guide-flow');
   if (flow) {
@@ -1478,6 +1490,7 @@ function selectGuideStep(id) {
   }
   const detail = document.getElementById('guide-detail');
   if (!detail) return;
+  guideScrollToSelected(id);
 
   const pipelineItem = APP_GUIDE.pipeline.find(p => p.id === id);
   if (pipelineItem) {
@@ -1571,6 +1584,10 @@ function initAppGuide() {
     document.getElementById('guide-version').textContent = `Guide v${APP_GUIDE.version}`;
     renderGuideFlow();
     selectGuideStep('step1');
+    const bodyEl = overlay.querySelector('.guide-panel-body');
+    const flowEl = document.getElementById('guide-flow');
+    if (bodyEl) bodyEl.scrollTop = 0;
+    if (flowEl) flowEl.scrollTop = 0;
     overlay.hidden = false;
     document.body.classList.add('guide-open');
   };

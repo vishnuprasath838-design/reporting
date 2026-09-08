@@ -46,7 +46,7 @@ Index of everything defined in `app.js` — constants, state, and every function
 | `updateSidebar()` | 322 | Refresh "working rows / removed" stats with count-up animation |
 | `showToast(msg, type)` | 343 | Show a transient toast notification |
 | `initDateDisplay()` | 1391 | Print today's date in the header |
-| `initDarkMode()` | 1596 | Dark/light toggle, persisted under `brand-theme` |
+| `initDarkMode()` | 1613 | Dark/light toggle, persisted under `brand-theme` |
 
 ## Step 1 — Region selection
 
@@ -131,9 +131,10 @@ Index of everything defined in `app.js` — constants, state, and every function
 | `guideLiveRules()` | 1434 | Live `DEFAULT_RULES` table |
 | `guideLiveRefCols()` | 1442 | Live yesterday-report column table (from `YESTERDAY_COLUMNS`) |
 | `guideLiveColors(includeChargeRefs)` | 1457 | Live colour swatches + orange charge-reference pills |
-| `selectGuideStep(id)` | 1473 | Highlight the flow node and render the detail card (static prose + live sections) |
-| `renderGuideFlow()` | 1510 | Build the flow chart: 8 step nodes, connector line, Step 7's collapsible 9 sub-steps |
-| `initAppGuide()` | 1567 | Wire trigger button / FAB / overlay open-close (Esc, backdrop) |
+| `guideScrollToSelected(id)` | 1473 | Auto-scroll on selection: flow node into view (desktop) or detail card into view (≤880px stacked) |
+| `selectGuideStep(id)` | 1485 | Highlight the flow node and render the detail card (static prose + live sections) |
+| `renderGuideFlow()` | 1523 | Build the flow chart: 8 step nodes, connector line, Step 7's collapsible 9 sub-steps |
+| `initAppGuide()` | 1580 | Wire trigger button / FAB / overlay open-close (Esc, backdrop) |
 
 ---
 
@@ -141,7 +142,7 @@ Index of everything defined in `app.js` — constants, state, and every function
 
 | Function | Line | Purpose |
 |----------|------|---------|
-| `#DOMContentLoaded` handler | 1617 | Calls every `init*` in order (incl. `initAppGuide()`), then `goToStep(1)` |
+| `#DOMContentLoaded` handler | 1634 | Calls every `init*` in order (incl. `initAppGuide()`), then `goToStep(1)` |
 
 ---
 

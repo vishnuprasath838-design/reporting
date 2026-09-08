@@ -94,7 +94,7 @@ EDI outstanding POD report <DD.MM.YYYY> <selectedRegionTag>.xlsx
 
 The `<selectedRegionTag>` is `ALL`, `UK+IE`, etc. — set in `updateRegionSelectionUI`/`applyCountryFilter`. To change the filename pattern, edit `app.js:1330`.
 
-## `brand-theme` localStorage key  (`app.js:1602`)
+## `brand-theme` localStorage key  (`app.js:1619`)
 
 Dark/light preference key. Renaming it would orphan users' saved theme.
 
