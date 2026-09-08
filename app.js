@@ -799,7 +799,7 @@ async function runProcessing() {
   }
 
   // ── Sub-step 1: Description enrichment ──
-  addLogEntry('running', 'Description Enrichment', 'Refreshing Description from yesterday/morning report (col 2) & converting Courier Service to N/A…', '📝');
+  addLogEntry('running', 'Description Enrichment', 'Refreshing Description from yesterday/morning report (col 2) & converting Courier Service to #N/A…', '📝');
   await tick();
   let descMatches = 0;
   let courierReplaced = 0;
@@ -832,14 +832,14 @@ async function runProcessing() {
     // Convert any "Courier Service" description to N/A
     const currentDesc = String(row['Description'] ?? '').trim().toLowerCase();
     if (currentDesc.includes('courier service')) {
-      row['Description'] = 'N/A';
+      row['Description'] = '#N/A';
       courierReplaced++;
     }
   });
   
   console.log(`Description enrichment: ${lookupAttempts} attempts, ${foundMatches} matches, ${naValues} N/A values, ${descMatches} updates`);
   state.processLog.pop();
-  addLogEntry('success', 'Description Enrichment', `${descMatches} descriptions refreshed — ${courierReplaced} "Courier Service" values converted to N/A`, '📝');
+  addLogEntry('success', 'Description Enrichment', `${descMatches} descriptions refreshed — ${courierReplaced} "Courier Service" values converted to #N/A`, '📝');
   await tick();
 
   // ── Sub-step 2: UPS Tracking enrichment ──
@@ -1106,7 +1106,7 @@ function renderExport() {
       const strVal = val !== undefined && val !== null ? String(val) : '';
       // Show N/A for empty UPS Tracking/MAWB cells
       const isUpsCol = c === 'UPS Tracking/MAWB' || c === 'UPS Tracking';
-      td.textContent = isUpsCol && (!strVal || strVal.trim() === '' || strVal.toLowerCase() === 'n/a' || strVal === '0') ? 'N/A' : strVal;
+      td.textContent = isUpsCol && (!strVal || strVal.trim() === '' || strVal.toLowerCase() === 'n/a' || strVal === '0') ? '#N/A' : strVal;
       tr.appendChild(td);
     });
     tbody.appendChild(tr);
@@ -1159,7 +1159,7 @@ async function downloadFile() {
         // Show N/A for empty UPS Tracking/MAWB cells in Excel export
         const isUpsCol = col === 'UPS Tracking/MAWB' || col === 'UPS Tracking';
         if (isUpsCol && (strVal === '' || strVal === null || String(strVal).trim() === '' || String(strVal).toLowerCase() === 'n/a' || String(strVal) === '0')) {
-          return 'N/A';
+          return '#N/A';
         }
         return strVal;
       });

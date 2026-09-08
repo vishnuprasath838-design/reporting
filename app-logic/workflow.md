@@ -117,7 +117,7 @@ Two reference uploads:
 
 Click **Run Processing** to run **9 sub-steps** in sequence. Each sub-step writes a live entry into the processing log and removes/filters/colours rows as it goes. The full detail is in [processing-pipeline.md](processing-pipeline.md).
 
-1. **Description Enrichment** — refresh from yesterday's report; convert "Courier Service" to N/A.
+1. **Description Enrichment** — refresh from yesterday's report; convert "Courier Service" to #N/A.
 2. **UPS Tracking** — refresh tracking numbers.
 3. **1Z Consolidation** — consolidate multiple 1Z tracking numbers into a single `UPS Tracking/MAWB` column.
 4. **QVM Backfill** — fill empty tracking cells from QVM (skipped if no QVM uploaded).
@@ -143,7 +143,7 @@ When finished, the summary shows final row count and how many rows were coloured
 
 - **Summary cards** show: original rows, region-removed rows, rule-removed rows, rows coloured, final rows.
 - A **preview table** shows the first 10 rows with full cell borders and colour coding.
-- **Empty UPS Tracking/MAWB cells** are displayed as **N/A**.
+- **Empty UPS Tracking/MAWB cells** are displayed as **#N/A**.
 - Click **Download Cleaned Report (.xlsx)** to export a workbook with:
   - Frozen header row
   - Bold header on dark fill

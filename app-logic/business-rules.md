@@ -85,7 +85,7 @@ A row keeps its first colour — the charge-reference fallback only applies to r
 - **1Z consolidation (sub-step 3):** if a row's UPS Tracking contains more than one `1Z...` number (comma-separated), they are joined with `, ` into a new column called `UPS Tracking/MAWB`; the old `UPS Tracking` column is then deleted everywhere.
 - **QVM backfill (sub-step 4):** rows whose tracking is empty are filled from the QVM file (tracking read from column C, index 2).
 - **MAWB backfill (sub-step 5):** remaining empty rows are filled from their own **MAWB** value. Rows whose Description contains 'routing' are also filled from MAWB. Afterwards the **MAWB column is deleted**.
-- **N/A display:** any cell that ends up empty in UPS Tracking/MAWB is shown as **N/A** in the preview (see [data-model.md](data-model.md) for what counts as empty).
+- **N/A display:** any cell that ends up empty in UPS Tracking/MAWB is shown as **#N/A** in the preview (see [data-model.md](data-model.md) for what counts as empty).
 
 ---
 

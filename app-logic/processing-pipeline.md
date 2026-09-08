@@ -30,11 +30,11 @@ For every row:
 
 1. Look up the row's **Trial AWB** in `yesterdayLookup`.
 2. If found and the yesterday value in column B (index `YESTERDAY_COLUMNS.DESCRIPTION`) is **not** N/A, copy it into the row's `Description`.
-3. Separately: if the row's `Description` currently contains the text **"courier service"** (case-insensitive), it is replaced with `N/A`.
+3. Separately: if the row's `Description` currently contains the text **"courier service"** (case-insensitive), it is replaced with `#N/A`.
 
 **Why:** yesterday's report is the source of truth for what an item actually is; "Courier Service" is not a real description.
 
-Log reports: descriptions refreshed, Courier Service → N/A conversions.
+Log reports: descriptions refreshed, Courier Service → #N/A conversions.
 
 ## Sub-step 2 — UPS Tracking refresh  (`app.js:845`)
 
