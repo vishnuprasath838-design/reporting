@@ -58,11 +58,11 @@ const DEFAULT_RULES = [
 ];
 
 const COLOR_ARGB = {
-  yellow: 'FFFFE600',
-  purple: 'FFBD77F2',
-  red:    'FFFC2700',
-  orange: 'FFFFB105',
-  blue:   'FF05CDFF',
+  yellow: 'FFF5F04D',
+  purple: 'FFD3B3EF',
+  red:    'FFDD2C2C',
+  orange: 'FFFCD0A4',
+  blue:   'FF59BBF6',
 };
 
 const PKG_COLOR_MAP = { y:'yellow', p:'purple', r:'red', o:'orange', b:'blue' };
@@ -1093,7 +1093,7 @@ function renderExport() {
   schema.forEach(c => { const th = document.createElement('th'); th.textContent = c; trHead.appendChild(th); });
   thead.appendChild(trHead);
 
-  const COLOR_BG = { yellow:'#FFE600', purple:'#BD77F2', red:'#FC2700', orange:'#FFB105', blue:'#05CDFF' };
+  const COLOR_BG = { yellow:'#F5F04D', purple:'#D3B3EF', red:'#DD2C2C', orange:'#FCD0A4', blue:'#59BBF6' };
 
   state.workingData.slice(0, 10).forEach((row, idx) => {
     const tr   = document.createElement('tr');
@@ -1145,7 +1145,7 @@ async function downloadFile() {
     for (let c = 1; c <= schema.length; c++) {
       const cell = headerRow.getCell(c);
       cell.font = { name: 'Arial', bold: true, color: { argb: 'FFE8E8F0' }, size: 8 };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E1E2E' } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF251159' } };
       cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
       cell.border = headerBorder;
     }

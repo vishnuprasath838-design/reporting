@@ -40,8 +40,8 @@ Friendly names shown in the UI for each region key. Purely cosmetic.
 ## `COLOR_ARGB` — Excel fill colours  (`app.js:60`)
 
 ```js
-{ yellow: 'FFFFE600', purple: 'FFBD77F2', red: 'FFFC2700',
-  orange: 'FFFFB105', blue: 'FF05CDFF' }
+{ yellow: 'FFF5F04D', purple: 'FFD3B3EF', red: 'FFDD2C2C',
+  orange: 'FFFCD0A4', blue: 'FF59BBF6' }
 ```
 
 Hex in Excel ARGB format (`AARRGGBB`). Consumed by the export code when filling row cells.

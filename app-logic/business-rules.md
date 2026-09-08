@@ -69,11 +69,11 @@ Both reference files (yesterday's report, QVM) are read as arrays-of-arrays. Col
 Rows are colour-coded in the final export. Colours come from two sources:
 
 1. **Yesterday's comment column** (sub-step 7): a letter read from column 17 of the yesterday report maps to a colour:
-   - `y` → 🟡 Yellow `#FFE600`
-   - `p` → 🟣 Purple `#BD77F2`
-   - `r` → 🔴 Red `#FC2700`
-   - `o` → 🟠 Orange `#FFB105`
-   - `b` → 🔵 Blue `#05CDFF`
+   - `y` → 🟡 Yellow `#F5F04D`
+   - `p` → 🟣 Purple `#D3B3EF`
+   - `r` → 🔴 Red `#DD2C2C`
+   - `o` → 🟠 Orange `#FCD0A4`
+   - `b` → 🔵 Blue `#59BBF6`
 2. **Charge-reference fallback** (sub-step 8): rows still uncoloured become 🟠 Orange if their **Charge Reference** contains any of `LT19062`, `LT18925`, `EP5770` (list at `app.js:69`). If the row has no comment from yesterday, an `O` is written into the comment column.
 
 A row keeps its first colour — the charge-reference fallback only applies to rows that were not already coloured.

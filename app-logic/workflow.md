@@ -133,11 +133,11 @@ When finished, the summary shows final row count and how many rows were coloured
 
 | Colour | Letter in comment column | Hex |
 |--------|--------------------------|-----|
-| 🟡 Yellow | Y | `#FFE600` |
-| 🟣 Purple | P | `#BD77F2` |
-| 🔴 Red | R | `#FC2700` |
-| 🟠 Orange (charge ref) | O | `#FFB105` |
-| 🔵 Blue | B | `#05CDFF` |
+| 🟡 Yellow | Y | `#F5F04D` |
+| 🟣 Purple | P | `#D3B3EF` |
+| 🔴 Red | R | `#DD2C2C` |
+| 🟠 Orange (charge ref) | O | `#FCD0A4` |
+| 🔵 Blue | B | `#59BBF6` |
 
 ## Step 8 — Review & Export
 
