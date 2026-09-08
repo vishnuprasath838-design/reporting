@@ -24,7 +24,7 @@ flowchart TD
 
 ---
 
-## Sub-step 1 — Description Enrichment  (`app.js:801`)
+## Sub-step 1 — Description Enrichment  (`app.js:906`)
 
 For every row:
 
@@ -36,13 +36,13 @@ For every row:
 
 Log reports: descriptions refreshed, Courier Service → #N/A conversions.
 
-## Sub-step 2 — UPS Tracking refresh  (`app.js:845`)
+## Sub-step 2 — UPS Tracking refresh  (`app.js:950`)
 
 For every row, look up Trial AWB in `yesterdayLookup`; if found and column C (index `YESTERDAY_COLUMNS.UPS_TRACKING`) is not N/A, overwrite the row's `UPS Tracking` with it.
 
 **Why:** the raw upload may have stale or missing tracking; yesterday's report has today's-correct values.
 
-## Sub-step 3 — 1Z Consolidation  (`app.js:881`)
+## Sub-step 3 — 1Z Consolidation  (`app.js:986`)
 
 For every row:
 
@@ -55,7 +55,7 @@ For every row:
 
 **Why:** one shipment can have multiple UPS scannables; they must live together in a single column for the downstream system.
 
-## Sub-step 4 — QVM Backfill  (`app.js:898`)
+## Sub-step 4 — QVM Backfill  (`app.js:1003`)
 
 **Skipped** (log entry "skip") if no QVM file was uploaded.
 
@@ -66,7 +66,7 @@ For every row whose `UPS Tracking/MAWB` is N/A:
 
 **Why:** QVM holds tracking numbers the upload and yesterday's report don't.
 
-## Sub-step 5 — MAWB Backfill → delete column  (`app.js:919`)
+## Sub-step 5 — MAWB Backfill → delete column  (`app.js:1024`)
 
 For every row:
 
@@ -77,13 +77,13 @@ Then the **`MAWB` column is removed** from both the schema and every row.
 
 **Why:** MAWB is a flight/truck bill number that can stand in for a missing UPS number, but the final output must not contain the MAWB column at all.
 
-## Sub-step 6 — EXP DATE Lookup  (`app.js:944`)
+## Sub-step 6 — EXP DATE Lookup  (`app.js:1049`)
 
 For every row, look up Trial AWB in `yesterdayLookup`; if found and column M (index `YESTERDAY_COLUMNS.EXP_DATE`) is not N/A, copy it into the (previously empty) `EXP DATE` column.
 
 **Why:** expiry dates live only in yesterday's report, not the raw upload.
 
-## Sub-step 7 — Packaging Comments & Row Colouring  (`app.js:960`)
+## Sub-step 7 — Packaging Comments & Row Colouring  (`app.js:1065`)
 
 1. Insert a new column with a **space** as its header (a deliberately blank comment header) immediately after `Packaging Type Size`.
 2. For every row, look up Trial AWB in `yesterdayLookup`; read column R (index `YESTERDAY_COLUMNS.COLOR`):
@@ -94,7 +94,7 @@ For every row, look up Trial AWB in `yesterdayLookup`; if found and column M (in
 
 **Why:** yesterday's report already encodes commentary ("Yellow", "Purple", etc.) that must be preserved as both text and colour.
 
-## Sub-step 8 — Charge Reference Orange Fallback  (`app.js:1000`)
+## Sub-step 8 — Charge Reference Orange Fallback  (`app.js:1105`)
 
 For every row that is **not already coloured**:
 
@@ -105,7 +105,7 @@ Finally, the comment column values are **uppercased** everywhere (letters like `
 
 **Why:** certain charge references always demand attention, so unlabelled rows get flagged orange.
 
-## Sub-step 9 — Collection Date Cleanup  (`app.js:1026`)
+## Sub-step 9 — Collection Date Cleanup  (`app.js:1131`)
 
 This is the **only sub-step that deletes whole rows**.
 

@@ -68,6 +68,111 @@ const COLOR_ARGB = {
 const PKG_COLOR_MAP = { y:'yellow', p:'purple', r:'red', o:'orange', b:'blue' };
 const CHARGE_REF_ORANGE = ['LT19062','LT18925','EP5770'];
 
+/* ══════════════════════════════
+   App Guide — single source of truth for the in-app flow chart.
+   IMPORTANT: keep this in sync with the logic below and the app-logic/
+   docs. Update it in the SAME commit as any app change so the pushed
+   app matches. "Live" detail sections render from the real constants
+   (OUTPUT_SCHEMA, DEFAULT_RULES, YESTERDAY_COLUMNS, PKG_COLOR_MAP,
+   COLOR_ARGB, CHARGE_REF_ORANGE, regions) so those can never drift.
+   ══════════════════════════════ */
+const APP_GUIDE = {
+  version: '1.0',
+  steps: [
+    {
+      id: 'step1', step: 1, title: 'Region', tagline: 'Select path',
+      summary: 'Choose which region(s) the report covers. Your selection builds the list of countries used to filter rows downstream.',
+      bullets: [
+        'Cards: UK, US, EU, CH, IE, NON-EU — click to select, click again to deselect.',
+        'Combine regions for a custom path (e.g. UK + IE, US + UK + NON-EU).',
+        'Quick combinations: Select ALL (Global), UK + IE, US + UK + NON-EU, Clear.',
+        'UK, US, CH and IE expand to country aliases; EU covers 26 member states.',
+        'NON-EU is a catch-all that includes any country that is not in the EU and not UK/US/CH/IE.',
+        'The Continue button stays disabled until at least one region is selected.',
+      ],
+    },
+    {
+      id: 'step2', step: 2, title: 'Upload', tagline: 'Import Excel file',
+      summary: 'Import the raw Excel/CSV report. The original rows are preserved; a working copy is edited by every later step.',
+      bullets: [
+        'Accepts .xlsx, .xls and .csv files — drag & drop or browse.',
+        'Shows the file name, row count, size and active sheet on success.',
+        'The raw data becomes the baseline (original count); the working copy is what all later steps modify.',
+      ],
+    },
+    {
+      id: 'step3', step: 3, title: 'Columns', tagline: 'Remap to output schema',
+      summary: 'Remap the uploaded columns to the fixed 19-column output schema. EXP DATE is created empty and filled during Processing.',
+      bullets: [
+        'Columns are matched by name (case & whitespace-insensitive) and copied into the output order.',
+        'Columns in the file that do not match the schema are not carried over.',
+        'EXP DATE is a brand-new empty column — it is populated from yesterday\u2019s report in Step 7.',
+      ],
+    },
+    {
+      id: 'step4', step: 4, title: 'Country Filter', tagline: 'Keep matching countries',
+      summary: 'Keep only the rows whose Delivery Country belongs to the countries of your selected regions.',
+      bullets: [
+        'Select All / Deselect All, or click individual countries in the grid.',
+        'Selecting all 6 regions (Global) keeps every row — 0 rows are removed.',
+        'NON-EU keeps countries that are not EU members and not UK/US/CH/IE.',
+        'Rows without a Delivery Country are removed.',
+      ],
+    },
+    {
+      id: 'step5', step: 5, title: 'Account Rules', tagline: 'Allowlist town checks',
+      summary: 'Remove rows that violate account-specific allowlists: if a row\u2019s Ch To key matches a rule, its town must be on that rule\u2019s allowlist.',
+      bullets: [
+        'Default rules are pre-loaded and shown below.',
+        'Each rule checks Delivery Town only, or Collection Town OR Delivery Town (both directions).',
+        'Rules can be deleted or added in the UI in real time.',
+        'Rows that break a rule are removed and counted.',
+      ],
+    },
+    {
+      id: 'step6', step: 6, title: 'Reference Files', tagline: 'Yesterday + QVM',
+      summary: 'Hand the app yesterday\u2019s report (required) and the optional QVM file so it can enrich tracking, descriptions, dates and colours.',
+      bullets: [
+        'Yesterday\u2019s / Morning Report (required) — source for Description, UPS Tracking, EXP DATE and row colours.',
+        'QVM File (optional) — backfills missing UPS Tracking / MAWB numbers.',
+        'Both files are joined to your rows by Trial AWB (column A).',
+        'Run Processing unlocks once yesterday\u2019s report is loaded.',
+      ],
+    },
+    {
+      id: 'step7', step: 7, title: 'Processing', tagline: '9 enrichment sub-steps',
+      summary: 'Run all enrichment automatically. Nine sub-steps refresh, backfill, colour-code and clean the report — click any sub-step in the flow to explore it.',
+      bullets: [
+        'Description enriched; \u201CCourier Service\u201D replaced with #N/A.',
+        'UPS Tracking refreshed; multiple 1Z numbers consolidated; QVM/MAWB backfill; MAWB column removed.',
+        'EXP DATE populated; packaging comment column and row colours added.',
+        'Rows with a blank or future Collection Date are deleted.',
+      ],
+    },
+    {
+      id: 'step8', step: 8, title: 'Export', tagline: 'Preview & download',
+      summary: 'Review the cleansed result, then download the formatted, colour-coded .xlsx report.',
+      bullets: [
+        'Summary cards show original, removed and final row counts, plus how many rows were coloured.',
+        'A preview shows the first 10 rows with colour coding; empty tracking cells appear as #N/A.',
+        'Download Cleaned Report (.xlsx): frozen header, auto-filter, colour-coded rows, branded header fill.',
+        'Start Over resets everything for a new file or region.',
+      ],
+    },
+  ],
+  pipeline: [
+    { id: 'p1', title: 'Description Enrichment',   desc: 'Refresh Description from yesterday\u2019s report (column B) and replace any \u201CCourier Service\u201D value with #N/A.' },
+    { id: 'p2', title: 'UPS Tracking',             desc: 'Refresh UPS Tracking from yesterday\u2019s report (column C) for every row keyed by Trial AWB.' },
+    { id: 'p3', title: '1Z Consolidation',         desc: 'Join multiple 1Z tracking numbers into a single UPS Tracking/MAWB column, then drop the old UPS Tracking column.' },
+    { id: 'p4', title: 'QVM Backfill',             desc: 'Top up rows whose tracking is still empty using the QVM file (column C). Skipped when no QVM file is uploaded.' },
+    { id: 'p5', title: 'MAWB Backfill',            desc: 'Fill remaining empty tracking from the row\u2019s own MAWB value, then delete the MAWB column.' },
+    { id: 'p6', title: 'EXP DATE Lookup',          desc: 'Populate the EXP DATE column from yesterday\u2019s report (column M).' },
+    { id: 'p7', title: 'Packaging Comments',       desc: 'Add a comment column next to Packaging Type Size and colour rows from the colour letter in yesterday\u2019s report (column R).' },
+    { id: 'p8', title: 'Charge Reference Colours', desc: 'Colour any still-uncoloured row orange when its Charge Reference contains a flagged reference (LT19062 / LT18925 / EP5770).' },
+    { id: 'p9', title: 'Collection Date Cleanup',  desc: 'Delete rows whose Collection Date is blank, unparseable, or in the future — only past dates and today are kept.' },
+  ],
+};
+
 
 // ══════════════════════════════
 //  State
@@ -1291,6 +1396,197 @@ function initDateDisplay() {
   if (el) el.textContent = formatted;
 }
 
+/* ══════════════════════════════
+   App Guide — overlay flow chart
+   ══════════════════════════════ */
+function excelColLetter(n) {
+  let s = '';
+  n = (n ?? 0) + 1;
+  while (n > 0) {
+    const r = (n - 1) % 26;
+    s = String.fromCharCode(65 + r) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
+function argbToHex(argb) {
+  return '#' + String(argb).slice(2).toUpperCase();
+}
+
+function guideLiveRegions() {
+  const regionInfo = [
+    ['UK', UK_COUNTRIES], ['US', US_COUNTRIES], ['EU', EU_COUNTRIES],
+    ['CH', CH_COUNTRIES], ['IE', IE_COUNTRIES],
+  ];
+  const pills = regionInfo
+    .map(([key, list]) => `<span class="gd-pill">${REGION_NAMES[key]} · ${list.length} ${list.length === 1 ? 'alias' : 'aliases'}</span>`)
+    .join('');
+  const total = regionInfo.reduce((n, [, list]) => n + list.length, 0);
+  return `<div class="gd-live"><span class="gd-live-tag">Live · Regions → ${total} country aliases</span><div class="gd-pills">${pills}<span class="gd-pill">${REGION_NAMES['NON-EU']} · catch-all</span></div></div>`;
+}
+
+function guideLiveSchema() {
+  const cols = OUTPUT_SCHEMA.map((c, i) => `<span class="gd-pill">${i + 1}. ${c}</span>`).join('');
+  return `<div class="gd-live"><span class="gd-live-tag">Live · Output schema (${OUTPUT_SCHEMA.length} columns)</span><div class="gd-pills">${cols}</div></div>`;
+}
+
+function guideLiveRules() {
+  const rows = DEFAULT_RULES
+    .map(r => `<tr><td>${r.keys.join(', ')}</td><td>${r.towns.join(', ')}</td><td>${r.checkBothDirections ? 'Collection OR Delivery' : 'Delivery only'}</td></tr>`)
+    .join('');
+  return `<div class="gd-live"><span class="gd-live-tag">Live · ${DEFAULT_RULES.length} default rules</span>
+    <table class="gd-table"><thead><tr><th>Ch To key</th><th>Town must be</th><th>Check</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function guideLiveRefCols() {
+  const map = [
+    ['Trial AWB', YESTERDAY_COLUMNS.TRIAL_AWB, 'Lookup key'],
+    ['Description', YESTERDAY_COLUMNS.DESCRIPTION, 'Sub-steps 1'],
+    ['UPS Tracking', YESTERDAY_COLUMNS.UPS_TRACKING, 'Sub-steps 2 & 4'],
+    ['EXP DATE', YESTERDAY_COLUMNS.EXP_DATE, 'Sub-step 6'],
+    ['Colour / Comment', YESTERDAY_COLUMNS.COLOR, 'Sub-step 7'],
+  ];
+  const rows = map
+    .map(([what, idx, why]) => `<tr><td>${excelColLetter(idx)} · index ${idx}</td><td>${what}</td><td>${why}</td></tr>`)
+    .join('');
+  return `<div class="gd-live"><span class="gd-live-tag">Live · Yesterday report columns</span>
+    <table class="gd-table"><thead><tr><th>Column</th><th>Content</th><th>Used by</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function guideLiveColors(includeChargeRefs) {
+  const letters = Object.keys(PKG_COLOR_MAP);
+  const swatches = letters
+    .map(letter => {
+      const keyName = PKG_COLOR_MAP[letter];
+      const hex = argbToHex(COLOR_ARGB[keyName]);
+      return `<span class="gd-swatch"><span class="gd-swatch-chip" style="background:${hex}"></span>${keyName[0].toUpperCase() + keyName.slice(1)} (${letter.toUpperCase()}) · ${hex}</span>`;
+    })
+    .join('');
+  let html = `<div class="gd-live"><span class="gd-live-tag">Live · Row colour key (${letters.length} colours from yesterday’s column R)</span><div class="gd-swatches">${swatches}</div></div>`;
+  if (includeChargeRefs) {
+    html += `<div class="gd-live"><span class="gd-live-tag">Live · ${CHARGE_REF_ORANGE.length} orange fallback charge references</span><div class="gd-pills">${CHARGE_REF_ORANGE.map(c => `<span class="gd-pill"><code>${c}</code></span>`).join('')}</div></div>`;
+  }
+  return html;
+}
+
+function selectGuideStep(id) {
+  const flow = document.getElementById('guide-flow');
+  if (flow) {
+    flow.querySelectorAll('.flow-node-main, .flow-child').forEach(n =>
+      n.classList.toggle('active', n.dataset.guideId === id));
+  }
+  const detail = document.getElementById('guide-detail');
+  if (!detail) return;
+
+  const pipelineItem = APP_GUIDE.pipeline.find(p => p.id === id);
+  if (pipelineItem) {
+    detail.innerHTML = `
+      <div class="gd-kicker is-pipeline">Processing · sub-step ${APP_GUIDE.pipeline.indexOf(pipelineItem) + 1} of ${APP_GUIDE.pipeline.length}</div>
+      <div class="gd-title">${pipelineItem.title}</div>
+      <p class="gd-summary">${pipelineItem.desc}</p>
+      <p class="gd-note">Part of <strong>Step 7 — Processing</strong>. Runs automatically and is recorded in the process log.</p>`;
+    return;
+  }
+
+  const step = APP_GUIDE.steps.find(s => s.id === id) || APP_GUIDE.steps[0];
+  let html = `
+    <div class="gd-kicker">Step ${step.step} of ${APP_GUIDE.steps.length}</div>
+    <div class="gd-title">${step.title}</div>
+    <p class="gd-summary">${step.summary}</p>
+    <ul class="gd-list">${step.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`;
+
+  if (step.id === 'step1') html += guideLiveRegions();
+  if (step.id === 'step3') html += guideLiveSchema();
+  if (step.id === 'step5') html += guideLiveRules();
+  if (step.id === 'step6') html += guideLiveRefCols();
+  if (step.id === 'step7') html += guideLiveColors(true);
+  if (step.id === 'step8') html += guideLiveColors(false);
+
+  html += `<p class="gd-note">Live values above are rendered from the app configuration, so this guide stays in sync whenever a new release is pushed.</p>`;
+  detail.innerHTML = html;
+}
+
+function renderGuideFlow() {
+  const flow = document.getElementById('guide-flow');
+  if (!flow) return;
+  flow.innerHTML = '';
+
+  APP_GUIDE.steps.forEach((step, i) => {
+    const node = document.createElement('button');
+    node.type = 'button';
+    node.className = 'flow-node flow-node-main';
+    if (i === 0) node.classList.add('active');
+    node.dataset.guideId = step.id;
+    node.innerHTML = `
+      <span class="flow-num">${step.step}</span>
+      <span class="flow-node-main-txt">
+        <span class="flow-node-title">${step.title}</span>
+        <span class="flow-node-sub">${step.tagline}</span>
+      </span>`;
+    node.addEventListener('click', () => selectGuideStep(step.id));
+    flow.appendChild(node);
+
+    if (step.id === 'step7') {
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'flow-expand-toggle';
+      toggle.style.cssText = `align-self:flex-start;display:flex;align-items:center;gap:6px;margin:2px 0 8px 20px;padding:6px 12px;border-radius:9999px;border:1.5px dashed var(--border-glass);background:transparent;color:var(--text-muted);font-family:inherit;font-size:.72rem;font-weight:600;cursor:pointer;transition:var(--spring-transition);`;
+      toggle.innerHTML = `
+        <svg class="flow-chevron open" viewBox="0 0 16 16" fill="none" width="13" height="13"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Enrichment sub-steps (${APP_GUIDE.pipeline.length})`;
+      toggle.addEventListener('click', () => {
+        const open = childGroup.style.display !== 'none';
+        childGroup.style.display = open ? 'none' : '';
+        toggle.querySelector('.flow-chevron').classList.toggle('open', !open);
+      });
+      flow.appendChild(toggle);
+
+      const childGroup = document.createElement('div');
+      childGroup.className = 'flow-children';
+      APP_GUIDE.pipeline.forEach((p, pi) => {
+        const c = document.createElement('button');
+        c.type = 'button';
+        c.className = 'flow-child';
+        c.dataset.guideId = p.id;
+        c.innerHTML = `<span class="flow-child-num">${pi + 1}</span><span class="flow-child-title">${p.title}</span>`;
+        c.addEventListener('click', () => selectGuideStep(p.id));
+        childGroup.appendChild(c);
+      });
+      flow.appendChild(childGroup);
+    }
+
+    if (i < APP_GUIDE.steps.length - 1) {
+      const conn = document.createElement('div');
+      conn.className = 'flow-to';
+      flow.appendChild(conn);
+    }
+  });
+}
+
+function initAppGuide() {
+  const overlay = document.getElementById('guide-overlay');
+  if (!overlay) return;
+  const open = () => {
+    document.getElementById('guide-version').textContent = `Guide v${APP_GUIDE.version}`;
+    renderGuideFlow();
+    selectGuideStep('step1');
+    overlay.hidden = false;
+    document.body.classList.add('guide-open');
+  };
+  const close = () => {
+    overlay.hidden = true;
+    document.body.classList.remove('guide-open');
+  };
+  ['app-guide-btn', 'app-guide-fab'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', open);
+  });
+  document.getElementById('guide-close').addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) close(); });
+}
+
 // ══════════════════════════════
 //  Bootstrap
 // ══════════════════════════════
@@ -1329,6 +1625,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initRefFiles();
   initProcessing();
   initExport();
+  initAppGuide();
   goToStep(1);
 });
 

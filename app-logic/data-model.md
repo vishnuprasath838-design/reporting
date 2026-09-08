@@ -4,7 +4,7 @@ How data flows through the app and how the core helpers behave. Targeted at deve
 
 ---
 
-## The `state` object (`app.js:75`)
+## The `state` object (`app.js:180`)
 
 A single global holds everything the app knows:
 
@@ -64,16 +64,16 @@ Any columns — Step 3 matches purely by normalised **header name** to the outpu
 
 | Helper | Location | Behaviour |
 |--------|----------|-----------|
-| `norm(s)` | `app.js:112` | Trim → lowercase → collapse internal whitespace. Used for **every** comparison and lookup key, so values are compared case/whitespace-insensitively. |
-| `isNA(val)` | `app.js:114` | Treats `null`, `undefined`, `''`, `'n/a'`, `'na'`, `'#n/a'` as empty. **`0` is NOT treated as empty** (it may be a valid value). |
-| `countUp(el, target)` | `app.js:122` | Animated number ticker for sidebar stats. |
-| `parseDateValue(val)` | `app.js:137` | Accepts `Date`, Excel serial number (via `XLSX.SSF`), `DD/MM/YYYY`, `DD-MM-YYYY`, `DD.MM.YYYY`, `YYYY-MM-DD`, and a generic `new Date(s)` fallback. Returns `null` for blank/N/A/`0`/unparseable. |
-| `buildLookup(aoa)` | `app.js:173` | Skips header row, indexes `aoa[i][0]` (column A → Trial AWB) normalised as the key, whole row as the value. |
-| `parseFileAsAoA(file)` | `app.js:184` | Reads a file with SheetJS and converts the first sheet to an array-of-arrays (`defval: ''`). |
+| `norm(s)` | `app.js:217` | Trim → lowercase → collapse internal whitespace. Used for **every** comparison and lookup key, so values are compared case/whitespace-insensitively. |
+| `isNA(val)` | `app.js:219` | Treats `null`, `undefined`, `''`, `'n/a'`, `'na'`, `'#n/a'` as empty. **`0` is NOT treated as empty** (it may be a valid value). |
+| `countUp(el, target)` | `app.js:227` | Animated number ticker for sidebar stats. |
+| `parseDateValue(val)` | `app.js:242` | Accepts `Date`, Excel serial number (via `XLSX.SSF`), `DD/MM/YYYY`, `DD-MM-YYYY`, `DD.MM.YYYY`, `YYYY-MM-DD`, and a generic `new Date(s)` fallback. Returns `null` for blank/N/A/`0`/unparseable. |
+| `buildLookup(aoa)` | `app.js:278` | Skips header row, indexes `aoa[i][0]` (column A → Trial AWB) normalised as the key, whole row as the value. |
+| `parseFileAsAoA(file)` | `app.js:289` | Reads a file with SheetJS and converts the first sheet to an array-of-arrays (`defval: ''`). |
 
 ## Reference-file row format
 
-Both reference files are arrays-of-arrays (headers in row 0). Column accessors are 0-based indices via `YESTERDAY_COLUMNS` (`app.js:104`):
+Both reference files are arrays-of-arrays (headers in row 0). Column accessors are 0-based indices via `YESTERDAY_COLUMNS` (`app.js:209`):
 
 | Index | Column | Meaning |
 |-------|--------|---------|

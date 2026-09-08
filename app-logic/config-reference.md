@@ -68,7 +68,13 @@ Sub-step 8 colours a row orange if its `Charge Reference` contains any of these 
 
 **Changing it:** add/remove charge-reference fragments. Shorter fragments match more rows (it's a substring test).
 
-## `YESTERDAY_COLUMNS` — reference-file column indexes  (`app.js:104`)
+## `APP_GUIDE` — in-app flow-chart copy  (`app.js:79`)
+
+The full text of the App Guide overlay (bottom-left icon / mobile FAB): 8 step descriptions + 9 processing sub-step descriptions + `version`.
+
+**Changing it:** edit the `steps` / `pipeline` arrays. Update it in the **same commit** as any app change so the pushed guide matches the pushed app. The "live" sections (output schema, rules, reference columns, colours) are *not* stored here — they render from `OUTPUT_SCHEMA`, `DEFAULT_RULES`, `YESTERDAY_COLUMNS`, `PKG_COLOR_MAP` and `COLOR_ARGB` at open time, so those can't drift.
+
+## `YESTERDAY_COLUMNS` — reference-file column indexes  (`app.js:209`)
 
 ```js
 { TRIAL_AWB: 0, DESCRIPTION: 1, UPS_TRACKING: 2, EXP_DATE: 12, COLOR: 17 }
@@ -76,19 +82,19 @@ Sub-step 8 colours a row orange if its `Charge Reference` contains any of these 
 
 0-based indexes into the **yesterday/morning report** rows used by sub-steps 1, 2, 6 and 7.
 
-**Changing it:** if the source report's column layout changes (e.g. EXP DATE moves from M to N), update the number here. No other code changes. ⚠️ These are the most likely constants to need updating if a new source file format arrives. The QVM file's tracking column is hard-coded as index `1` (column C) in sub-step 4 (`app.js:907`).
+**Changing it:** if the source report's column layout changes (e.g. EXP DATE moves from M to N), update the number here. No other code changes. ⚠️ These are the most likely constants to need updating if a new source file format arrives. The QVM file's tracking column is hard-coded as index `1` (column C) in sub-step 4 (`app.js:1005`).
 
 ## `outputSchema` / export formatting
 
-Export styling (frozen header, auto-filter, borders, header fill) is inline in the `initExport` section (`app.js:1070+`). The download filename is built as:
+Export styling (frozen header, auto-filter, borders, header fill) is inline in the export section (`app.js:1226+`, in `downloadFile`). The download filename is built as:
 
 ```
 EDI outstanding POD report <DD.MM.YYYY> <selectedRegionTag>.xlsx
 ```
 
-The `<selectedRegionTag>` is `ALL`, `UK+IE`, etc. — set in `updateRegionSelectionUI`/`applyCountryFilter`. To change the filename pattern, edit `app.js:1225`.
+The `<selectedRegionTag>` is `ALL`, `UK+IE`, etc. — set in `updateRegionSelectionUI`/`applyCountryFilter`. To change the filename pattern, edit `app.js:1330`.
 
-## `brand-theme` localStorage key  (`app.js:1306`)
+## `brand-theme` localStorage key  (`app.js:1602`)
 
 Dark/light preference key. Renaming it would orphan users' saved theme.
 
@@ -103,6 +109,7 @@ Dark/light preference key. Renaming it would orphan users' saved theme.
 | Change a rule's town allowlist | that rule's `towns` array |
 | Support a new colour letter | `PKG_COLOR_MAP` + `COLOR_ARGB` (`app.js:60`,`68`) |
 | Flag different charge refs orange | `CHARGE_REF_ORANGE` (`app.js:69`) |
-| Yesterday report columns moved | `YESTERDAY_COLUMNS` (`app.js:104`) |
+| Update the in-app App Guide descriptions | `APP_GUIDE` (`app.js:79`) |
+| Yesterday report columns moved | `YESTERDAY_COLUMNS` (`app.js:209`) |
 | Add an output column | `OUTPUT_SCHEMA` (`app.js:9`) |
-| Change the export filename | `app.js:1225` |
+| Change the export filename | `app.js:1330` |

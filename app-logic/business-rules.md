@@ -17,7 +17,7 @@ Six selectable regions on Step 1 expand into a flat country list used by the cou
 | **EU** | 26 EU member states — Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden | `app.js:18` |
 | **CH** | Switzerland, CH, Swiss, Confederatio Helvetica | `app.js:36` |
 | **IE** | Ireland, IE, Republic of Ireland, Eire | `app.js:40` |
-| **NON-EU** | A special catch-all: *any country that is **not** an EU member and **not** a UK/US/CH/IE dedicated-region country*. It does not expand to a list; it is a negation rule. | `app.js:345`, `app.js:525` |
+| **NON-EU** | A special catch-all: *any country that is **not** an EU member and **not** a UK/US/CH/IE dedicated-region country*. It does not expand to a list; it is a negation rule. | `app.js:450`, `app.js:616` |
 
 ### Effective logic for Step 4 (country filter)
 
@@ -50,7 +50,7 @@ Rules live in `DEFAULT_RULES` (`app.js:53`). A rule is: *if `Ch To key` is one o
 
 ## 3. Reference-file column mapping
 
-Both reference files (yesterday's report, QVM) are read as arrays-of-arrays. Columns are addressed **by 0-based index**, so "column 12" in Excel talk (column M) is index 12 in the code. Mapping in `YESTERDAY_COLUMNS` (`app.js:104`):
+Both reference files (yesterday's report, QVM) are read as arrays-of-arrays. Columns are addressed **by 0-based index**, so "column 12" in Excel talk (column M) is index 12 in the code. Mapping in `YESTERDAY_COLUMNS` (`app.js:209`):
 
 | 0-based index | Excel column | Purpose |
 |---------------|--------------|---------|
