@@ -19,7 +19,7 @@ Index of everything defined in `app.js` — constants, state, and every function
 | `COLOR_ARGB` | 60 | Colour key → Excel ARGB hex |
 | `PKG_COLOR_MAP` | 68 | Comment letter → colour key |
 | `CHARGE_REF_ORANGE` | 69 | Charge References that trigger orange |
-| `APP_GUIDE` | 79 | In-app flow-chart copy (8 steps + 9 sub-steps); source of truth for the App Guide overlay |
+| `APP_GUIDE` | 79 | In-app flow-chart copy (8 steps + 9 sub-steps); source of truth for the App Guide overlay — each step/pipeline item includes a `tools` array naming the libraries and functions used |
 | `state` | 180 | Global application state (see [data-model.md](data-model.md)) |
 | `YESTERDAY_COLUMNS` | 209 | 0-based indexes into the yesterday report |
 

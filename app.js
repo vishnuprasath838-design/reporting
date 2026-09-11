@@ -90,6 +90,7 @@ const APP_GUIDE = {
         'NON-EU is a catch-all that includes any country that is not in the EU and not UK/US/CH/IE.',
         'The Continue button stays disabled until at least one region is selected.',
       ],
+      tools: ['Vanilla JS (initRegionSelection → DOM event listeners, classList.toggle)'],
     },
     {
       id: 'step2', step: 2, title: 'Upload', tagline: 'Import Excel file',
@@ -99,6 +100,7 @@ const APP_GUIDE = {
         'Shows the file name, row count, size and active sheet on success.',
         'The raw data becomes the baseline (original count); the working copy is what all later steps modify.',
       ],
+      tools: ['SheetJS (via handleFile → XLSX.read(), XLSX.utils.sheet_to_json())'],
     },
     {
       id: 'step3', step: 3, title: 'Columns', tagline: 'Remap to output schema',
@@ -108,6 +110,7 @@ const APP_GUIDE = {
         'Columns in the file that do not match the schema are not carried over.',
         'EXP DATE is a brand-new empty column — it is populated from yesterday\u2019s report in Step 7.',
       ],
+      tools: ['Vanilla JS (via applyColumnClean → Array.map(), norm() for header matching)'],
     },
     {
       id: 'step4', step: 4, title: 'Country Filter', tagline: 'Keep matching countries',
@@ -118,6 +121,7 @@ const APP_GUIDE = {
         'NON-EU keeps countries that are not EU members and not UK/US/CH/IE.',
         'Rows without a Delivery Country are removed.',
       ],
+      tools: ['Vanilla JS (via applyCountryFilter → Array.filter(), norm() for comparison)'],
     },
     {
       id: 'step5', step: 5, title: 'Account Rules', tagline: 'Allowlist town checks',
@@ -128,6 +132,7 @@ const APP_GUIDE = {
         'Rules can be deleted or added in the UI in real time.',
         'Rows that break a rule are removed and counted.',
       ],
+      tools: ['Vanilla JS (via applyRules → Array.filter(), norm() for key/town matching)'],
     },
     {
       id: 'step6', step: 6, title: 'Reference Files', tagline: 'Yesterday + QVM',
@@ -137,6 +142,10 @@ const APP_GUIDE = {
         'QVM File (optional) — backfills missing UPS Tracking / MAWB numbers.',
         'Both files are joined to your rows by Trial AWB (column A).',
         'Run Processing unlocks once yesterday\u2019s report is loaded.',
+      ],
+      tools: [
+        'SheetJS (via handleRefFile → parseFileAsAoA → XLSX.read(), XLSX.utils.sheet_to_json())',
+        'Vanilla JS (via buildLookup → Map indexed on Trial AWB)',
       ],
     },
     {
@@ -148,6 +157,10 @@ const APP_GUIDE = {
         'EXP DATE populated; packaging comment column and row colours added.',
         'Rows with a blank or future Collection Date are deleted.',
       ],
+      tools: [
+        'Vanilla JS (via runProcessing → forEach, filter, splice, Map lookups)',
+        'SheetJS.SSF (via parseDateValue → XLSX.SSF.parse_date_code for date parsing)',
+      ],
     },
     {
       id: 'step8', step: 8, title: 'Export', tagline: 'Preview & download',
@@ -158,18 +171,31 @@ const APP_GUIDE = {
         'Download Cleaned Report (.xlsx): frozen header, auto-filter, colour-coded rows, branded header fill.',
         'Start Over resets everything for a new file or region.',
       ],
+      tools: [
+        'ExcelJS (via downloadFile → new ExcelJS.Workbook(), worksheet.addRow(), row.fill)',
+        'SheetJS (via countUp → XLSX.utils for summary stats)',
+      ],
     },
   ],
   pipeline: [
-    { id: 'p1', title: 'Description Enrichment',   desc: 'Refresh Description from yesterday\u2019s report (column B) and replace any \u201CCourier Service\u201D value with #N/A.' },
-    { id: 'p2', title: 'UPS Tracking',             desc: 'Refresh UPS Tracking from yesterday\u2019s report (column C) for every row keyed by Trial AWB.' },
-    { id: 'p3', title: '1Z Consolidation',         desc: 'Join multiple 1Z tracking numbers into a single UPS Tracking/MAWB column, then drop the old UPS Tracking column.' },
-    { id: 'p4', title: 'QVM Backfill',             desc: 'Top up rows whose tracking is still empty using the QVM file (column C). Skipped when no QVM file is uploaded.' },
-    { id: 'p5', title: 'MAWB Backfill',            desc: 'Fill remaining empty tracking from the row\u2019s own MAWB value, then delete the MAWB column.' },
-    { id: 'p6', title: 'EXP DATE Lookup',          desc: 'Populate the EXP DATE column from yesterday\u2019s report (column M).' },
-    { id: 'p7', title: 'Packaging Comments',       desc: 'Add a comment column next to Packaging Type Size and colour rows from the colour letter in yesterday\u2019s report (column R).' },
-    { id: 'p8', title: 'Charge Reference Colours', desc: 'Colour any still-uncoloured row orange when its Charge Reference contains a flagged reference (LT19062 / LT18925 / EP5770).' },
-    { id: 'p9', title: 'Collection Date Cleanup',  desc: 'Delete rows whose Collection Date is blank, unparseable, or in the future — only past dates and today are kept.' },
+    { id: 'p1', title: 'Description Enrichment',   desc: 'Refresh Description from yesterday\u2019s report (column B) and replace any \u201CCourier Service\u201D value with #N/A.',
+      tools: ['Vanilla JS (Map.get() per row, String.includes for #Courier Service check)'] },
+    { id: 'p2', title: 'UPS Tracking',             desc: 'Refresh UPS Tracking from yesterday\u2019s report (column C) for every row keyed by Trial AWB.',
+      tools: ['Vanilla JS (Map.get() per row by Trial AWB)'] },
+    { id: 'p3', title: '1Z Consolidation',         desc: 'Join multiple 1Z tracking numbers into a single UPS Tracking/MAWB column, then drop the old UPS Tracking column.',
+      tools: ['Vanilla JS (String.match(/1Z/), Array.filter, column splice)'] },
+    { id: 'p4', title: 'QVM Backfill',             desc: 'Top up rows whose tracking is still empty using the QVM file (column C). Skipped when no QVM file is uploaded.',
+      tools: ['Vanilla JS (Map.get() from QVM lookup, isNA() guard)'] },
+    { id: 'p5', title: 'MAWB Backfill',            desc: 'Fill remaining empty tracking from the row\u2019s own MAWB value, then delete the MAWB column.',
+      tools: ['Vanilla JS (isNA() guard, column splice to drop MAWB)'] },
+    { id: 'p6', title: 'EXP DATE Lookup',          desc: 'Populate the EXP DATE column from yesterday\u2019s report (column M).',
+      tools: ['Vanilla JS (Map.get() by Trial AWB)', 'SheetJS.SSF (via parseDateValue → XLSX.SSF.parse_date_code)'] },
+    { id: 'p7', title: 'Packaging Comments',       desc: 'Add a comment column next to Packaging Type Size and colour rows from the colour letter in yesterday\u2019s report (column R).',
+      tools: ['Vanilla JS (PKG_COLOR_MAP lookup, Array.splice for new column, COLOR_ARGB fill)'] },
+    { id: 'p8', title: 'Charge Reference Colours', desc: 'Colour any still-uncoloured row orange when its Charge Reference contains a flagged reference (LT19062 / LT18925 / EP5770).',
+      tools: ['Vanilla JS (String.includes check against CHARGE_REF_ORANGE array)'] },
+    { id: 'p9', title: 'Collection Date Cleanup',  desc: 'Delete rows whose Collection Date is blank, unparseable, or in the future — only past dates and today are kept.',
+      tools: ['SheetJS.SSF (via parseDateValue → XLSX.SSF.parse_date_code)', 'Vanilla JS (Date comparison, Array.filter)'] },
   ],
 };
 
@@ -1494,11 +1520,15 @@ function selectGuideStep(id) {
 
   const pipelineItem = APP_GUIDE.pipeline.find(p => p.id === id);
   if (pipelineItem) {
-    detail.innerHTML = `
+    let pHtml = `
       <div class="gd-kicker is-pipeline">Processing · sub-step ${APP_GUIDE.pipeline.indexOf(pipelineItem) + 1} of ${APP_GUIDE.pipeline.length}</div>
       <div class="gd-title">${pipelineItem.title}</div>
-      <p class="gd-summary">${pipelineItem.desc}</p>
-      <p class="gd-note">Part of <strong>Step 7 — Processing</strong>. Runs automatically and is recorded in the process log.</p>`;
+      <p class="gd-summary">${pipelineItem.desc}</p>`;
+    if (pipelineItem.tools && pipelineItem.tools.length) {
+      pHtml += `<div class="gd-tools"><span class="gd-tools-label">Tool Stack</span><div class="gd-tools-chips">${pipelineItem.tools.map(t => `<span class="gd-tool-chip">${t}</span>`).join('')}</div></div>`;
+    }
+    pHtml += `<p class="gd-note">Part of <strong>Step 7 — Processing</strong>. Runs automatically and is recorded in the process log.</p>`;
+    detail.innerHTML = pHtml;
     return;
   }
 
@@ -1508,6 +1538,10 @@ function selectGuideStep(id) {
     <div class="gd-title">${step.title}</div>
     <p class="gd-summary">${step.summary}</p>
     <ul class="gd-list">${step.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`;
+
+  if (step.tools && step.tools.length) {
+    html += `<div class="gd-tools"><span class="gd-tools-label">Tool Stack</span><div class="gd-tools-chips">${step.tools.map(t => `<span class="gd-tool-chip">${t}</span>`).join('')}</div></div>`;
+  }
 
   if (step.id === 'step1') html += guideLiveRegions();
   if (step.id === 'step3') html += guideLiveSchema();
