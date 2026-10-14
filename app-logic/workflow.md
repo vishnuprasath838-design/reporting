@@ -160,3 +160,10 @@ When finished, the summary shows final row count and how many rows were coloured
 - 8-step sidebar rail shows live row stats — **Working rows** and **Removed rows** count up as you progress.
 - **Dark mode** toggle in the top bar, persisted in `localStorage` (`brand-theme`).
 - Toast notifications confirm each action or show errors.
+### Starting another report
+
+Start Over clears selected regions, raw and reference file inputs, report data, lookups, colours, processing logs and preview. It restores default account rules and enables Run Processing for the next report. Reference input listeners are registered once at startup; only replacement browse buttons are rebound.
+
+### Export readability
+
+Export columns fit the header and actual exported values, with widths between 14 and 60 characters. All cells wrap text; explicit row heights account for wrapped lines and embedded line breaks so long descriptions and tracking lists remain visible.

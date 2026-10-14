@@ -168,8 +168,8 @@ const APP_GUIDE = {
       bullets: [
         'Summary cards show original, removed and final row counts, plus how many rows were coloured.',
         'A preview shows the first 10 rows with colour coding; empty tracking cells appear as #N/A.',
-        'Download Cleaned Report (.xlsx): frozen header, auto-filter, colour-coded rows, branded header fill.',
-        'Start Over resets everything for a new file or region.',
+        'Download Cleaned Report (.xlsx): content-sized columns, wrapped text with fitted row heights, frozen header, auto-filter, colour-coded rows, branded header fill.',
+        'Start Over clears region selections, uploads and results, and re-enables processing for a new report.',
       ],
       tools: [
         'ExcelJS (via downloadFile → new ExcelJS.Workbook(), worksheet.addRow(), row.fill)',
@@ -706,7 +706,7 @@ function renderRules() {
     const card = document.createElement('div');
     card.className = 'rule-card';
     card.innerHTML = `
-      <span class="rule-icon">🔑</span>
+      <span class="rule-icon">${uiIcon('key')}</span>
       <div class="rule-text">
         If <span class="rule-keys">Ch To key</span> is <span class="rule-keys">${rule.keys.join(', ')}</span>
         and ${direction} is <em>not</em> <span class="rule-towns">${rule.towns.join(' / ')}</span>
@@ -874,12 +874,18 @@ function initProcessing() {
   });
 }
 
-function addLogEntry(type, title, msg, iconEmoji = '✨') {
+const UI_ICON_PATHS = {"document": "<path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><path d=\"M14 2v6h6M8 13h8M8 17h6\"/>", "key": "<circle cx=\"8\" cy=\"8\" r=\"5\"/><path d=\"m12 12 9 9m-4-4 3-3m-6 0 3-3\"/>", "package": "<path d=\"m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8M7.5 5.5l9 5\"/>", "merge": "<path d=\"M5 3v5a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4V3M12 12v9m-4-4 4 4 4-4\"/>", "search": "<circle cx=\"10.5\" cy=\"10.5\" r=\"7.5\"/><path d=\"m16 16 5 5\"/>", "plane": "<path d=\"m22 2-7 20-4-9-9-4zM22 2 11 13\"/>", "calendar": "<rect x=\"3\" y=\"5\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2\"/>", "palette": "<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"3\"/><path d=\"M3 12h18M12 3v18\"/>", "check": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "trash": "<path d=\"M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7\"/>", "loader": "<path d=\"M21 12a9 9 0 1 1-6.2-8.6\"/>"};
+
+function uiIcon(name) {
+  return `<svg class="ui-icon" data-icon="${name}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${UI_ICON_PATHS[name] || UI_ICON_PATHS.check}</svg>`;
+}
+
+function addLogEntry(type, title, msg, iconName = 'check') {
   state.processLog.push({
     type,
     title,
     msg,
-    icon: iconEmoji,
+    icon: iconName,
     time: `Step ${state.processLog.length}`,
   });
   renderProcessLog(state.processLog);
@@ -892,7 +898,7 @@ function renderProcessLog(entries) {
     return;
   }
   container.innerHTML = entries.map(e => {
-    const iconContent = e.type === 'running' ? '<span class="spin">⠋</span>' : e.icon;
+    const iconContent = e.type === 'running' ? `<span class="spin">${uiIcon('loader')}</span>` : uiIcon(e.icon);
     return `
       <div class="log-card log-card--${e.type}">
         <div class="log-card-icon">${iconContent}</div>
@@ -930,7 +936,7 @@ async function runProcessing() {
   }
 
   // ── Sub-step 1: Description enrichment ──
-  addLogEntry('running', 'Description Enrichment', 'Refreshing Description from yesterday/morning report (col 2) & converting Courier Service to #N/A…', '📝');
+  addLogEntry('running', 'Description Enrichment', 'Refreshing Description from yesterday/morning report (col 2) & converting Courier Service to #N/A…', 'document');
   await tick();
   let descMatches = 0;
   let courierReplaced = 0;
@@ -970,11 +976,11 @@ async function runProcessing() {
   
   console.log(`Description enrichment: ${lookupAttempts} attempts, ${foundMatches} matches, ${naValues} N/A values, ${descMatches} updates`);
   state.processLog.pop();
-  addLogEntry('success', 'Description Enrichment', `${descMatches} descriptions refreshed — ${courierReplaced} "Courier Service" values converted to #N/A`, '📝');
+  addLogEntry('success', 'Description Enrichment', `${descMatches} descriptions refreshed — ${courierReplaced} "Courier Service" values converted to #N/A`, 'document');
   await tick();
 
   // ── Sub-step 2: UPS Tracking enrichment ──
-  addLogEntry('running', 'UPS Tracking', 'Refreshing UPS Tracking from yesterday/morning report (col 3)…', '📦');
+  addLogEntry('running', 'UPS Tracking', 'Refreshing UPS Tracking from yesterday/morning report (col 3)…', 'package');
   await tick();
   let upsMatches = 0;
   let upsLookupAttempts = 0;
@@ -1006,11 +1012,11 @@ async function runProcessing() {
   
   console.log(`UPS enrichment: ${upsLookupAttempts} attempts, ${upsFoundMatches} matches, ${upsNaValues} N/A values, ${upsMatches} updates`);
   state.processLog.pop();
-  addLogEntry('success', 'UPS Tracking', `${upsMatches} tracking numbers refreshed from yesterday/morning report`, '📦');
+  addLogEntry('success', 'UPS Tracking', `${upsMatches} tracking numbers refreshed from yesterday/morning report`, 'package');
   await tick();
 
   // ── Sub-step 3: Multi-1Z consolidation → UPS Tracking/MAWB ──
-  addLogEntry('running', '1Z Consolidation', 'Consolidating multi-1Z tracking numbers into UPS Tracking/MAWB…', '🔀');
+  addLogEntry('running', '1Z Consolidation', 'Consolidating multi-1Z tracking numbers into UPS Tracking/MAWB…', 'merge');
   await tick();
   let consolidated = 0;
   state.workingData.forEach(row => {
@@ -1023,12 +1029,12 @@ async function runProcessing() {
   const upsIdx = state.dynamicSchema.indexOf('UPS Tracking');
   if (upsIdx !== -1) state.dynamicSchema[upsIdx] = 'UPS Tracking/MAWB';
   state.processLog.pop();
-  addLogEntry('success', '1Z Consolidation', `UPS Tracking/MAWB created — ${consolidated} multi-1Z rows consolidated`, '🔀');
+  addLogEntry('success', '1Z Consolidation', `UPS Tracking/MAWB created — ${consolidated} multi-1Z rows consolidated`, 'merge');
   await tick();
 
   // ── Sub-step 4: QVM backfill ──
   if (state.qvmLookup.size > 0) {
-    addLogEntry('running', 'QVM Backfill', 'Backfilling N/A UPS Tracking/MAWB from QVM (col 2)…', '🔍');
+    addLogEntry('running', 'QVM Backfill', 'Backfilling N/A UPS Tracking/MAWB from QVM (col 2)…', 'search');
     await tick();
     let qvmFilled = 0;
     state.workingData.forEach(row => {
@@ -1041,14 +1047,14 @@ async function runProcessing() {
       }
     });
     state.processLog.pop();
-    addLogEntry('success', 'QVM Backfill', `${qvmFilled} missing tracking numbers backfilled from QVM`, '🔍');
+    addLogEntry('success', 'QVM Backfill', `${qvmFilled} missing tracking numbers backfilled from QVM`, 'search');
   } else {
-    addLogEntry('skip', 'QVM Backfill', 'Skipped (no QVM file uploaded)', '🔍');
+    addLogEntry('skip', 'QVM Backfill', 'Skipped (no QVM file uploaded)', 'search');
   }
   await tick();
 
   // ── Sub-step 5: MAWB backfill → delete MAWB column ──
-  addLogEntry('running', 'MAWB Backfill', 'Backfilling remaining N/A rows from MAWB column…', '✈️');
+  addLogEntry('running', 'MAWB Backfill', 'Backfilling remaining N/A rows from MAWB column…', 'plane');
   await tick();
   let mawbFilled = 0;
   state.workingData.forEach(row => {
@@ -1069,11 +1075,11 @@ async function runProcessing() {
   if (mawbIdx !== -1) state.dynamicSchema.splice(mawbIdx, 1);
   state.workingData.forEach(row => { delete row['MAWB']; });
   state.processLog.pop();
-  addLogEntry('success', 'MAWB Backfill', `${mawbFilled} rows filled from MAWB, MAWB column removed`, '✈️');
+  addLogEntry('success', 'MAWB Backfill', `${mawbFilled} rows filled from MAWB, MAWB column removed`, 'plane');
   await tick();
 
   // ── Sub-step 6: EXP DATE lookup ──
-  addLogEntry('running', 'EXP DATE Lookup', 'Populating EXP DATE from yesterday/morning report (col 13)…', '📅');
+  addLogEntry('running', 'EXP DATE Lookup', 'Populating EXP DATE from yesterday/morning report (col 13)…', 'calendar');
   await tick();
   let expFilled = 0;
   state.workingData.forEach(row => {
@@ -1085,11 +1091,11 @@ async function runProcessing() {
     }
   });
   state.processLog.pop();
-  addLogEntry('success', 'EXP DATE Lookup', `${expFilled} expiry dates populated`, '📅');
+  addLogEntry('success', 'EXP DATE Lookup', `${expFilled} expiry dates populated`, 'calendar');
   await tick();
 
   // ── Sub-step 7: Packaging Comments (Separate Column) & Row Colouring ──
-  addLogEntry('running', 'Packaging Comments', 'Adding comment column & row colours from yesterday/morning report (col 18)…', '🎨');
+  addLogEntry('running', 'Packaging Comments', 'Adding comment column & row colours from yesterday/morning report (col 18)…', 'palette');
   await tick();
   let pkgColored = 0;
   let pkgPopulated = 0;
@@ -1125,11 +1131,11 @@ async function runProcessing() {
     }
   });
   state.processLog.pop();
-  addLogEntry('success', 'Packaging Comments', `Added comment column (${pkgPopulated} comments) — ${pkgColored} rows coloured`, '🎨');
+  addLogEntry('success', 'Packaging Comments', `Added comment column (${pkgPopulated} comments) — ${pkgColored} rows coloured`, 'palette');
   await tick();
 
   // ── Sub-step 8: Charge Reference ──
-  addLogEntry('running', 'Charge Reference Colours', 'Applying orange colour by Charge Reference for uncoloured rows…', '🔑');
+  addLogEntry('running', 'Charge Reference Colours', 'Applying orange colour by Charge Reference for uncoloured rows…', 'key');
   await tick();
   let chargeColored = 0;
   state.workingData.forEach((row, idx) => {
@@ -1151,11 +1157,11 @@ async function runProcessing() {
   });
   
   state.processLog.pop();
-  addLogEntry('success', 'Charge Reference Colours', `${chargeColored} uncoloured rows coloured orange`, '🔑');
+  addLogEntry('success', 'Charge Reference Colours', `${chargeColored} uncoloured rows coloured orange`, 'key');
   await tick();
 
   // ── Sub-step 9: Collection Date Cleanup (Delete Blank & Future Dates) ──
-  addLogEntry('running', 'Collection Date Cleanup', 'Deleting rows with blank or future Collection Date…', '📆');
+  addLogEntry('running', 'Collection Date Cleanup', 'Deleting rows with blank or future Collection Date…', 'calendar');
   await tick();
   const todayEnd = new Date();
   todayEnd.setHours(23, 59, 59, 999);
@@ -1189,10 +1195,10 @@ async function runProcessing() {
   state.rowColors = newRowColors;
   const removedDatesCount = beforeDateFilterCount - state.workingData.length;
   state.processLog.pop();
-  addLogEntry('success', 'Collection Date Cleanup', `${removedDatesCount} blank/future collection date rows deleted (${state.workingData.length.toLocaleString()} rows kept)`, '📆');
+  addLogEntry('success', 'Collection Date Cleanup', `${removedDatesCount} blank/future collection date rows deleted (${state.workingData.length.toLocaleString()} rows kept)`, 'calendar');
   await tick();
 
-  addLogEntry('info', 'Processing Complete', `${state.workingData.length.toLocaleString()} final rows · ${state.rowColors.size.toLocaleString()} rows coloured`, '✨');
+  addLogEntry('info', 'Processing Complete', `${state.workingData.length.toLocaleString()} final rows · ${state.rowColors.size.toLocaleString()} rows coloured`, 'check');
 
   state.processDone = true;
   document.getElementById('step7-run').classList.add('hidden');
@@ -1249,6 +1255,32 @@ function initExport() {
   document.getElementById('start-over-btn').addEventListener('click', startOver);
 }
 
+// ExcelJS does not calculate Excel's automatic row heights. Use conservative
+// character widths and explicit heights so wrapped text is visible on opening.
+function fitExportColumns(worksheet, columnCount) {
+  const textWidth = text => Array.from(text).reduce((width, char) =>
+    width + (/[^\u0000-\u00ff]/.test(char) ? 2 : /[MW@%]/.test(char) ? 1.5 : 1), 0);
+  for (let c = 1; c <= columnCount; c++) {
+    let longest = 0;
+    worksheet.eachRow({ includeEmpty: false }, row => {
+      String(row.getCell(c).value ?? '').split(/\r?\n/).forEach(line => {
+        longest = Math.max(longest, textWidth(line));
+      });
+    });
+    worksheet.getColumn(c).width = Math.min(60, Math.max(14, longest + 4));
+  }
+  worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+    let lines = 1;
+    for (let c = 1; c <= columnCount; c++) {
+      const available = Math.max(1, worksheet.getColumn(c).width - 4);
+      const cellLines = String(row.getCell(c).value ?? '').split(/\r?\n/)
+        .reduce((total, line) => total + Math.max(1, Math.ceil(textWidth(line) / available)), 0);
+      lines = Math.max(lines, cellLines);
+    }
+    row.height = Math.max(rowNumber === 1 ? 22 : 18, lines * 15 + 6);
+  });
+}
+
 async function downloadFile() {
   const btn = document.getElementById('download-btn');
   btn.disabled = true;
@@ -1258,7 +1290,7 @@ async function downloadFile() {
     const worksheet = workbook.addWorksheet('Cleaned Report');
     const schema    = state.dynamicSchema;
 
-    // Define columns
+    // Start with header widths; fit to exported values after adding data rows.
     worksheet.columns = schema.map(col => ({
       header: String(col).trim() === '' ? '' : col,
       width: Math.max(String(col).length + 4, 14),
@@ -1277,7 +1309,7 @@ async function downloadFile() {
       const cell = headerRow.getCell(c);
       cell.font = { name: 'Arial', bold: true, color: { argb: 'FFE8E8F0' }, size: 8 };
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF251159' } };
-      cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
+      cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
       cell.border = headerBorder;
     }
 
@@ -1309,7 +1341,7 @@ async function downloadFile() {
 
       for (let c = 1; c <= schema.length; c++) {
         const cell = excelRow.getCell(c);
-        cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: false };
+        cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
         cell.font = { name: 'Arial', size: 8 };
         cell.border = dataBorder;
         if (argb) {
@@ -1317,6 +1349,8 @@ async function downloadFile() {
         }
       }
     });
+
+    fitExportColumns(worksheet, schema.length);
 
     // Guarantee a border on every cell in the entire used range
     const usedRange = {
@@ -1370,7 +1404,8 @@ async function downloadFile() {
 
 function startOver() {
   Object.assign(state, {
-    currentStep: 1, selectedRegion: null,
+    currentStep: 1, selectedRegions: new Set(),
+    selectedRegionTag: 'Custom', selectedRegionLabel: 'No Region Selected',
     rawData:[], workingData:[], dynamicSchema:[...OUTPUT_SCHEMA], fileName:'',
     originalCount:0, removedByCountry:0, removedByRules:0,
     selectedCountries: new Set(),
@@ -1381,8 +1416,7 @@ function startOver() {
   });
 
   // Reset region selection
-  document.querySelectorAll('.region-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('step1-next').disabled = true;
+  updateRegionSelectionUI();
 
   document.getElementById('file-input').value = '';
   document.getElementById('file-info').classList.add('hidden');
@@ -1397,14 +1431,16 @@ function startOver() {
     `<button class="btn btn-outline btn-sm" id="qvm-browse">Upload File</button>`;
   document.getElementById('step6-next').disabled = true;
 
-  document.getElementById('yesterday-input').addEventListener('change', () => {
-    if (document.getElementById('yesterday-input').files[0])
-      handleRefFile(document.getElementById('yesterday-input').files[0],'yesterday');
-  });
-  document.getElementById('qvm-input').addEventListener('change', () => {
-    if (document.getElementById('qvm-input').files[0])
-      handleRefFile(document.getElementById('qvm-input').files[0],'qvm');
-  });
+  document.getElementById('yesterday-input').value = '';
+  document.getElementById('qvm-input').value = '';
+  document.getElementById('step7-run').disabled = false;
+  document.getElementById('step7-run').classList.remove('hidden');
+  document.getElementById('step7-back').disabled = false;
+  document.getElementById('step7-next').classList.add('hidden');
+  renderProcessLog([]);
+  document.getElementById('preview-thead').innerHTML = '';
+  document.getElementById('preview-tbody').innerHTML = '';
+
   document.getElementById('yesterday-browse').addEventListener('click', () =>
     document.getElementById('yesterday-input').click());
   document.getElementById('qvm-browse').addEventListener('click', () =>
