@@ -168,7 +168,7 @@ const APP_GUIDE = {
       bullets: [
         'Summary cards show original, removed and final row counts, plus how many rows were coloured.',
         'A preview shows the first 10 rows with colour coding; empty tracking cells appear as #N/A.',
-        'Download Cleaned Report (.xlsx): content-sized columns, wrapped text with fitted row heights, frozen header, auto-filter, colour-coded rows, branded header fill.',
+        'Download Cleaned Report (.xlsx): compact columns, top-aligned wrapped text with automatic row heights, frozen header, auto-filter, colour-coded rows, branded header fill.',
         'Start Over clears region selections, uploads and results, and re-enables processing for a new report.',
       ],
       tools: [
@@ -1255,30 +1255,14 @@ function initExport() {
   document.getElementById('start-over-btn').addEventListener('click', startOver);
 }
 
-// ExcelJS does not calculate Excel's automatic row heights. Use conservative
-// character widths and explicit heights so wrapped text is visible on opening.
-function fitExportColumns(worksheet, columnCount) {
-  const textWidth = text => Array.from(text).reduce((width, char) =>
-    width + (/[^\u0000-\u00ff]/.test(char) ? 2 : /[MW@%]/.test(char) ? 1.5 : 1), 0);
-  for (let c = 1; c <= columnCount; c++) {
-    let longest = 0;
-    worksheet.eachRow({ includeEmpty: false }, row => {
-      String(row.getCell(c).value ?? '').split(/\r?\n/).forEach(line => {
-        longest = Math.max(longest, textWidth(line));
-      });
-    });
-    worksheet.getColumn(c).width = Math.min(60, Math.max(14, longest + 4));
-  }
-  worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-    let lines = 1;
-    for (let c = 1; c <= columnCount; c++) {
-      const available = Math.max(1, worksheet.getColumn(c).width - 4);
-      const cellLines = String(row.getCell(c).value ?? '').split(/\r?\n/)
-        .reduce((total, line) => total + Math.max(1, Math.ceil(textWidth(line) / available)), 0);
-      lines = Math.max(lines, cellLines);
-    }
-    row.height = Math.max(rowNumber === 1 ? 22 : 18, lines * 15 + 6);
-  });
+// Keep the report compact. Leave row heights automatic so Excel can reflow
+// wrapped cells when the user resizes a column instead of clipping the text.
+function exportColumnWidth(column) {
+  if (String(column).trim() === '') return 5;
+  if (/date|replenishment/i.test(column)) return 23;
+  if (/tracking|mawb/i.test(column)) return 19;
+  if (/description|group a c name|packaging/i.test(column)) return 18;
+  return 16;
 }
 
 async function downloadFile() {
@@ -1290,15 +1274,14 @@ async function downloadFile() {
     const worksheet = workbook.addWorksheet('Cleaned Report');
     const schema    = state.dynamicSchema;
 
-    // Start with header widths; fit to exported values after adding data rows.
+    // Use compact report widths with automatic-height wrapped rows.
     worksheet.columns = schema.map(col => ({
       header: String(col).trim() === '' ? '' : col,
-      width: Math.max(String(col).length + 4, 14),
+      width: exportColumnWidth(col),
     }));
 
     // Style header row (Left Aligned)
     const headerRow = worksheet.getRow(1);
-    headerRow.height = 22;
     const headerBorder = {
       top: { style: 'thin', color: { argb: 'FF94A3B8' } },
       left: { style: 'thin', color: { argb: 'FF94A3B8' } },
@@ -1309,7 +1292,7 @@ async function downloadFile() {
       const cell = headerRow.getCell(c);
       cell.font = { name: 'Arial', bold: true, color: { argb: 'FFE8E8F0' }, size: 8 };
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF251159' } };
-      cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+      cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
       cell.border = headerBorder;
     }
 
@@ -1328,7 +1311,6 @@ async function downloadFile() {
       });
 
       const excelRow = worksheet.addRow(rowArray);
-      excelRow.height = 18;
 
       const colorKey = state.rowColors.get(idx);
       const argb = colorKey ? COLOR_ARGB[colorKey] : null;
@@ -1341,7 +1323,7 @@ async function downloadFile() {
 
       for (let c = 1; c <= schema.length; c++) {
         const cell = excelRow.getCell(c);
-        cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+        cell.alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
         cell.font = { name: 'Arial', size: 8 };
         cell.border = dataBorder;
         if (argb) {
@@ -1349,8 +1331,6 @@ async function downloadFile() {
         }
       }
     });
-
-    fitExportColumns(worksheet, schema.length);
 
     // Guarantee a border on every cell in the entire used range
     const usedRange = {

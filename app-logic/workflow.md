@@ -166,4 +166,4 @@ Start Over clears selected regions, raw and reference file inputs, report data, 
 
 ### Export readability
 
-Export columns fit the header and actual exported values, with widths between 14 and 60 characters. All cells wrap text; explicit row heights account for wrapped lines and embedded line breaks so long descriptions and tracking lists remain visible.
+Export uses compact column widths (16–19 characters for most fields, 23 for dates, 5 for the colour comment). All cells use top-aligned wrapped text. Row heights are left automatic, without fixed custom heights, so Excel can reflow wrapped content when columns are resized.
